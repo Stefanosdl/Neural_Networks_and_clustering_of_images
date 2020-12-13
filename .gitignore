@@ -127,3 +127,50 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# CPP ignores
+
+# MacOS specific
+.DS_Store
+
+# VS Code
+.vscode
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+lsh
+cube
+cluster
+# Custom ignores
+Datasets
+
