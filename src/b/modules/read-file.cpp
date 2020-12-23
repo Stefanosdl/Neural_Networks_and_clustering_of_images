@@ -84,7 +84,7 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
         all_images = new int *[image_number];
         for (int image = 0; image < (int)image_number; image++) {
             all_images[image] = new int[*d];
-            all_images[image] = &buffer[image + 4];
+            all_images[image] = &buffer[image + 8];
             mmfile += *d;
             for (int l = 0; l < L; l++) {
                 g_x = calculateG_X(k, *d, image, INPUT_FILE);
@@ -99,7 +99,7 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
         // loop over all images to read them
         for (unsigned int image = 0; image < image_number; image++) {
             query_images[image] = new int[*d];
-            query_images[image] = &buffer[image + 4];
+            query_images[image] = &buffer[image + 8];
             mmfile += *d;
         }
     }
