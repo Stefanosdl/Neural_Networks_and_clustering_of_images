@@ -50,13 +50,15 @@ uint8_t *openMMap(string name, long &size) {
     return m_ptr;
 }
 
+// TODO: FIX THIS: &buffer[image + 4]; THIS SHOULD PROBABLY CHANGE TO 8? BUT NEED TESTING
+
 // handling the input file
 void readFile(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d, int k, int L) {
     long length;
     uint8_t *mmfile = openMMap(filename, length);
 
     uint32_t* memblockmm;
-    unsigned char* buffer;
+    int* buffer;
     memblockmm = (uint32_t *)mmfile; //cast file to uint32 array
     uint32_t magic_number = memblockmm[0]; // take first int
     mmfile +=4; //increment by 4 as I read a 32 bit entry and each entry in mmfile is 8 bits.
@@ -73,16 +75,15 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
     
     *d = number_of_columns * number_of_rows;
     *number_of_images = image_number;
-    // change memblockmm to unsigned char *
-    buffer = static_cast<unsigned char *>(mmfile);
+    buffer = static_cast<int *>(mmfile);
     mmfile += *d;
 
     if (file_type == INPUT_FILE) {
         initializeHashtables(L, image_number);
         unsigned int g_x = 0;
-        all_images = new unsigned char *[image_number];
+        all_images = new int *[image_number];
         for (int image = 0; image < (int)image_number; image++) {
-            all_images[image] = new unsigned char[*d];
+            all_images[image] = new int[*d];
             all_images[image] = &buffer[image + 4];
             mmfile += *d;
             for (int l = 0; l < L; l++) {
@@ -94,10 +95,10 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
     }
     else if (file_type == QUERY_FILE) {
         // initialize the array for the query dataset
-        query_images = new unsigned char *[image_number];
+        query_images = new int *[image_number];
         // loop over all images to read them
         for (unsigned int image = 0; image < image_number; image++) {
-            query_images[image] = new unsigned char[*d];
+            query_images[image] = new int[*d];
             query_images[image] = &buffer[image + 4];
             mmfile += *d;
         }

@@ -8,24 +8,11 @@
 #include "../headers/distances.hpp"
 using namespace std;
 
-int* convertArray(unsigned char* array, int size) {
-    int *result_array = new int [size];
-    for (int i = 0; i < size;i++) {
-        result_array[i] = static_cast<int>(array[i]);
-    }
-    return result_array;
-}
-
 void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number_of_query_images) {
-	int* qarray, *parray;
 	auto sum = 0;
-	for (uint32_t q=0; q<50; q++){
+	for (uint32_t q=0; q<number_of_query_images; q++){
 		for (uint32_t image=0; image<number_of_images; image++){
-			qarray = convertArray(query_images[q], d);
-			parray = convertArray(all_images[image], d);
-			sum += manhattanDistance(qarray, parray, d);
-			delete[] parray;
-			delete[] qarray;
+			sum += manhattanDistance(query_images[q], all_images[image], d);
 		}
 	}
 	w = sum / (50*number_of_images);
@@ -35,7 +22,6 @@ float calculateS_IComponent() {
 	float s_i;
 	random_device generator;
 	uniform_real_distribution<float> distribution (0.0, (float) w);
-
 	// Generate a new double number
 	s_i = distribution(generator);
 	return s_i;
@@ -59,7 +45,7 @@ int calculateA_IComponent(float p_i, uint64_t d) {
 	return a_i;
 }
 
-unsigned long calculateH_XComponent(uint64_t d, unsigned char* x_i_array) {
+unsigned long calculateH_XComponent(uint64_t d, int* x_i_array) {
 	unsigned long int hx = 0;
 	unsigned long long int mExp;
 	int tempai, temphx;

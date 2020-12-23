@@ -8,8 +8,8 @@
 #define N 1
 
 // giving universal access to the all_images array
-extern unsigned char **all_images;
-extern unsigned char **query_images;
+extern int **all_images;
+extern int **query_images;
 
 void handleInput(int , char**, uint32_t*, uint64_t*, int*, int*, std::string*, std::string*, std::string*);
 void handleReExecution(uint32_t*, uint64_t*, int*, int*, std::string*, std::string*, std::string*);
