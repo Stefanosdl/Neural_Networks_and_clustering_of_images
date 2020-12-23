@@ -10,8 +10,8 @@ using namespace std;
 
 unsigned int M;
 unsigned int m;
-unsigned char** all_images = NULL;
-unsigned char** query_images = NULL;
+int** all_images = NULL;
+int** query_images = NULL;
 unsigned int w;
 
 void handleReExecution (
@@ -19,21 +19,19 @@ void handleReExecution (
 	uint64_t *d,
 	int *k,
 	int *l,
-	int *n,
-	unsigned int *r,
 	string *output_file,
-	string *query_file
+	string *query_file_original_space,
+	string *query_file_new_space
 	) {
-	string input_file, param;
+	string input_file_original_space, input_file_new_space, param, input;
 	cout << "Please enter new parameters for the program to re-execute or press enter to exit" << endl;
-	string input;
 	char split_char = ' ';
 	getline(cin, input);
 	if (input.size() == 0)
 		exit(SUCCESS);
-	// Here the least amount of arguments are 6
+	// Here the least amount of arguments are 10
 	// We don't pass the executable name as parameter
-	if (input.size() < 6) {
+	if (input.size() < 10) {
 		cout << "You need to provide the path of the files" << endl;
 		exit(ERROR);
 	}
@@ -52,40 +50,46 @@ void handleReExecution (
 			stringstream intValue(param);
 			intValue >> *l;
 		}
-		else if (param == "-N")	{
-			getline(token, param, split_char);
-			stringstream intValue(param);
-			intValue >> *n;
-		}
-		else if (param == "-R")	{
-			getline(token, param, split_char);
-			stringstream intValue(param);
-			intValue >> *r;
-		}
 		else if (param == "-o")	{
 			getline(token, param, split_char);
 			*output_file = param;
 		}
 		else if (param == "-d") {
 			getline(token, param, split_char);
-			input_file = param;
+			input_file_original_space = param;
+		}
+		else if (param == "-i") {
+			getline(token, param, split_char);
+			input_file_new_space = param;
 		}
 		else if (param == "-q")	{
 			getline(token, param, split_char);
-			*query_file = param;
+			*query_file_original_space = param;
+		}
+		else if (param == "-s")	{
+			getline(token, param, split_char);
+			*query_file_new_space = param;
 		}
 	}
 	// Check if the files are provided
-	if (input_file.empty())	{
-		cout << "You need to provide the input_file path" << endl;
+	if (input_file_original_space.empty())	{
+		cout << "You need to provide the input_file_original_space path" << endl;
+		exit(ERROR);
+	}
+	if (input_file_new_space.empty())	{
+		cout << "You need to provide the input_file_new_space path" << endl;
 		exit(ERROR);
 	}
 	if (output_file->empty()) {
 		cout << "You need to provide the output_file path" << endl;
 		exit(ERROR);
 	}
-	if (query_file->empty()) {
-		cout << "You need to provide the query_file path" << endl;
+	if (query_file_original_space->empty()) {
+		cout << "You need to provide the query_file_original_space path" << endl;
+		exit(ERROR);
+	}
+	if (query_file_new_space->empty()) {
+		cout << "You need to provide the query_file_new_space path" << endl;
 		exit(ERROR);
 	}
 
@@ -106,41 +110,52 @@ void handleInput(
 	uint64_t *d,
 	int *k,
 	int *l,
-	int *n,
-	unsigned int *r,
 	string *output_file,
-	string *query_file
+	string *query_file_original_space,
+	string *query_file_new_space
 	){
-	string input_file;
+	string input_file_original_space, input_file_new_space, param;
 	// First we need to check for the least amount of arguments required
-	// Which are 7 since we need 3 files with their param and the executable
-	if (argc < 7) {
+	// Which are 11 since we need 4 files with their param and the executable
+	if (argc < 11) {
 		cerr << "You need to provide the path of the files" << endl;
 		exit(ERROR);
 	}
 
-	string param = argv[1];
+	param = argv[1];
 	// get the path files
 	if (param != "-d") {
-		cerr << "You need to provide the input_file path" << endl;
+		cerr << "You need to provide the input_file_original_space path" << endl;
 		exit(ERROR);
 	}
-	input_file = argv[2];
+	input_file_original_space = argv[2];
 
- 	param = argv[3];
+	param = argv[3];
+	if (param != "-i") {
+		cerr << "You need to provide the input_file_new_space path" << endl;
+		exit(ERROR);
+	}
+	input_file_new_space = argv[4];
+
+ 	param = argv[5];
 	if (param != "-q") {
-		cerr << "You need to provide the query_file path" << endl;
+		cerr << "You need to provide the query_file_original_space path" << endl;
 		exit(ERROR);
 	}
-	*query_file = argv[4];
+	*query_file_original_space = argv[6];
 
-	for (int i = 5; i < argc; i++) {
+	param = argv[7];
+	if (param != "-s") {
+		cerr << "You need to provide the query_file_new_space path" << endl;
+		exit(ERROR);
+	}
+	*query_file_new_space = argv[8];
+
+	for (int i = 9; i < argc; i++) {
 		param = argv[i];
 		if (!argv[i+1]) exit(ERROR);
 		if (param == "-k") *k = atoi(argv[++i]);
 		else if (param == "-L") *l = atoi(argv[++i]);
-		else if (param == "-N") *n = atoi(argv[++i]);
-		else if (param == "-R") *r = atof(argv[++i]);
 		else if (param == "-o") *output_file = argv[++i];
 	}
 
