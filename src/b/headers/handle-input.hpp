@@ -15,4 +15,4 @@ void handleInput(int , char**, uint32_t*, uint64_t*, int*, int*, std::string*, s
 void handleReExecution(uint32_t*, uint64_t*, int*, int*, std::string*, std::string*, std::string*);
 void readFile(const std::string&, int, uint32_t*, uint64_t*, int, int);
 void printFiles(uint32_t, uint32_t, uint64_t);
-uint8_t *openMMap(std::string, long &);
+uint16_t *openMMap(std::string, long &);

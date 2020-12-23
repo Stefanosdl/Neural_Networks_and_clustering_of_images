@@ -18,7 +18,7 @@ search : $(OBJS)
 	$(CXX) -g $(OBJS) -o search
 
 # Final object files
-search.o : $(SOURCE) $(HEADER)
+lsh.o : $(SOURCE) $(HEADER)
 	$(CXX) $(FLAGS) $(SOURCE)
 
 # FOR LSH

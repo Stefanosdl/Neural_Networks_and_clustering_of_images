@@ -100,7 +100,7 @@ void handleReExecution (
 	// M as given from theory
 	M = pow(2, 32/(*k));
 	m = M/2 - 1;
-	readFile(input_file, INPUT_FILE, number_of_images, d, *k, *l);
+	readFile(input_file_original_space, INPUT_FILE, number_of_images, d, *k, *l);
 }
 
 void handleInput(
@@ -172,6 +172,6 @@ void handleInput(
 	M = pow(2, 32/(*k));
 	m = M/2 - 1;
 	// read data from the input_file 
-	readFile(input_file, INPUT_FILE, number_of_images, d, *k, *l);
+	readFile(input_file_original_space, INPUT_FILE, number_of_images, d, *k, *l);
 	// returning these values to main to continue execution
 }

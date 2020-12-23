@@ -31,10 +31,10 @@ void printFiles(uint32_t number_of_images, uint32_t number_of_query_images, uint
     }
 }
 
-uint8_t *openMMap(string name, long &size) {
+uint16_t *openMMap(string name, long &size) {
     int m_fd;
     struct stat statbuf;
-    uint8_t *m_ptr_begin;
+    uint16_t *m_ptr_begin;
 
     if ((m_fd = open(name.c_str(), O_RDONLY)) < 0) {
         perror("can't open file for reading");
@@ -42,10 +42,10 @@ uint8_t *openMMap(string name, long &size) {
     if (fstat(m_fd, &statbuf) < 0) {
         perror("fstat in openMMap failed");
     }
-    if ((m_ptr_begin = (uint8_t *)mmap(0, statbuf.st_size, PROT_READ, MAP_SHARED, m_fd, 0)) == MAP_FAILED) {
+    if ((m_ptr_begin = (uint16_t *)mmap(0, statbuf.st_size, PROT_READ, MAP_SHARED, m_fd, 0)) == MAP_FAILED) {
         perror("mmap in openMMap failed");
     }
-    uint8_t *m_ptr = m_ptr_begin;
+    uint16_t *m_ptr = m_ptr_begin;
     size = statbuf.st_size;
     return m_ptr;
 }
@@ -55,7 +55,7 @@ uint8_t *openMMap(string name, long &size) {
 // handling the input file
 void readFile(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d, int k, int L) {
     long length;
-    uint8_t *mmfile = openMMap(filename, length);
+    uint16_t *mmfile = openMMap(filename, length);
 
     uint32_t* memblockmm;
     int* buffer;
@@ -75,7 +75,7 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
     
     *d = number_of_columns * number_of_rows;
     *number_of_images = image_number;
-    buffer = static_cast<int *>(mmfile);
+    buffer = reinterpret_cast<int *>(mmfile);
     mmfile += *d;
 
     if (file_type == INPUT_FILE) {
