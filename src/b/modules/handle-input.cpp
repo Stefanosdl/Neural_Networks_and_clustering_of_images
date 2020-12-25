@@ -12,6 +12,8 @@ unsigned int M;
 unsigned int m;
 int** all_images = NULL;
 int** query_images = NULL;
+int **all_images_original_space = NULL;
+int **query_images_original_space = NULL;
 unsigned int w;
 
 void handleReExecution (
