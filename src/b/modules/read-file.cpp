@@ -74,7 +74,7 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
     uint16_t *mmfile = openMMap(filename, length);
 
     uint32_t* memblockmm;
-    int* buffer;
+    uint16_t* buffer;
     memblockmm = (uint32_t *)mmfile; //cast file to uint32 array
     uint32_t magic_number = memblockmm[0]; // take first int
     mmfile +=4; //increment by 4 as I read a 32 bit entry and each entry in mmfile is 8 bits.
@@ -91,33 +91,48 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
     
     *d = number_of_columns * number_of_rows;
     *number_of_images = image_number;
-    buffer = reinterpret_cast<int *>(mmfile);
-    mmfile += *d;
+    buffer = reinterpret_cast<uint16_t *>(mmfile);
+    
+    cout << magic_number << '\n';
+    cout << image_number << '\n';
+    cout << number_of_rows << '\n';
+    cout << number_of_columns << '\n';
+    cout << *d << '\n';
+
+    int dimensions = *d;
+    mmfile += dimensions * 2;
 
     if (file_type == INPUT_FILE) {
         initializeHashtables(L, image_number);
         unsigned int g_x = 0;
         all_images = new int *[image_number];
         for (int image = 0; image < (int)image_number; image++) {
-            all_images[image] = new int[*d];
-            all_images[image] = &buffer[image + 8];
-            mmfile += *d;
+            all_images[image] = new int[dimensions];
+            for (int i = 0; i < dimensions; i++) {
+                all_images[image][i] = reinterpret_cast<int*>(buffer[image][i]);
+            }
+            // all_images[image] = reinterpret_cast<int*>(&buffer[image]);
+            cout << "New Image" << '\n';
+            for (int i = 0; i < dimensions; i++) {
+                cout << all_images[image][i] << '\t';
+            }
+            mmfile += dimensions * 2;
             for (int l = 0; l < L; l++) {
-                g_x = calculateG_X(k, *d, image, INPUT_FILE);
+                g_x = calculateG_X(k, dimensions, image, INPUT_FILE);
                 // pass to hashtable
                 insertToHashtable(l, image, g_x, image_number);
             }
         }
     }
     else if (file_type == QUERY_FILE) {
-        // initialize the array for the query dataset
-        query_images = new int *[image_number];
-        // loop over all images to read them
-        for (unsigned int image = 0; image < image_number; image++) {
-            query_images[image] = new int[*d];
-            query_images[image] = &buffer[image + 8];
-            mmfile += *d;
-        }
+        // // initialize the array for the query dataset
+        // query_images = new int *[image_number];
+        // // loop over all images to read them
+        // for (unsigned int image = 0; image < image_number; image++) {
+        //     query_images[image] = new int[*d];
+        //     query_images[image] = reinterpret_cast<int*>(&buffer[image+8]);
+        //     mmfile += *d;
+        // }
     }
 
     munmap(mmfile, length);
