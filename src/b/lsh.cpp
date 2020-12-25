@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     uint32_t number_of_images = 0;
     uint32_t number_of_query_images = 0;
     uint64_t d = 0;
-    uint64_t d_query = 0;
+    uint64_t d_original = 0;
     int k = SMALL_K;
 	int l = SMALL_L;
 	int n = SMALL_N;
@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     // This give big values for w
     w = 400;
     // calculateW_Component(d, number_of_images, number_of_query_images);
-    handleInput(argc, argv, &number_of_images, &d, &k, &l, &output_file, &query_file_original_space, &query_file_new_space);
+    handleInput(argc, argv, &number_of_images, &d, &d_original, &k, &l, &output_file, &query_file_original_space, &query_file_new_space);
     // open output file
     o_file.open(output_file);
     if (!o_file.is_open()) {
@@ -27,8 +27,9 @@ int main(int argc, char **argv) {
         exit(ERROR);
     }
     do {
-        readFile(query_file_new_space, QUERY_FILE, &number_of_query_images, &d_query, k, l);
-        readFileOriginalSpace(query_file_original_space, QUERY_FILE, &number_of_query_images, &d_query, k, l);
+        readFile(query_file_new_space, QUERY_FILE, &number_of_query_images, &d, k, l);
+        readFileOriginalSpace(query_file_original_space, QUERY_FILE, &number_of_query_images, &d_original, k, l);
+        printFiles(number_of_images, number_of_query_images, d_original, d);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
             approximateN_NNs(&o_file, d, k, n, l, q_num, number_of_images);
         }
@@ -36,7 +37,7 @@ int main(int argc, char **argv) {
         // calculateW_Component(d, number_of_images, number_of_query_images);
         o_file.close();
         
-        handleReExecution(&number_of_images, &d, &k, &l, &output_file, &query_file_original_space, &query_file_new_space);
+        handleReExecution(&number_of_images, &d, &d_original, &k, &l, &output_file, &query_file_original_space, &query_file_new_space);
         // open output file
         o_file.open(output_file);
         if (!o_file.is_open()){

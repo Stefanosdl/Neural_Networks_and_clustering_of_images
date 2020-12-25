@@ -12,13 +12,14 @@ unsigned int M;
 unsigned int m;
 int** all_images = NULL;
 int** query_images = NULL;
-int **all_images_original_space = NULL;
-int **query_images_original_space = NULL;
+int** all_images_original_space = NULL;
+int** query_images_original_space = NULL;
 unsigned int w;
 
 void handleReExecution (
 	uint32_t *number_of_images, 
 	uint64_t *d,
+	uint64_t *d_original,
 	int *k,
 	int *l,
 	string *output_file,
@@ -103,7 +104,7 @@ void handleReExecution (
 	M = pow(2, 32/(*k));
 	m = M/2 - 1;
 	readFile(input_file_new_space, INPUT_FILE, number_of_images, d, *k, *l);
-	readFileOriginalSpace(input_file_original_space, INPUT_FILE, number_of_images, d, *k, *l);
+	readFileOriginalSpace(input_file_original_space, INPUT_FILE, number_of_images, d_original, *k, *l);
 }
 
 void handleInput(
@@ -111,6 +112,7 @@ void handleInput(
 	char **argv, 
 	uint32_t *number_of_images, 
 	uint64_t *d,
+	uint64_t *d_original,
 	int *k,
 	int *l,
 	string *output_file,
@@ -176,6 +178,6 @@ void handleInput(
 	m = M/2 - 1;
 	// read data from the input_file 
 	readFile(input_file_new_space, INPUT_FILE, number_of_images, d, *k, *l);
-	readFileOriginalSpace(input_file_original_space, INPUT_FILE, number_of_images, d, *k, *l);
+	readFileOriginalSpace(input_file_original_space, INPUT_FILE, number_of_images, d_original, *k, *l);
 	// returning these values to main to continue execution
 }

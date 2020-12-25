@@ -12,20 +12,36 @@
 #include "../headers/manhattan-hashing.hpp"
 using namespace std;
 
-void printFiles(uint32_t number_of_images, uint32_t number_of_query_images, uint64_t d) {
-    cout << "INPUT DATASET:" << endl;
+void printFiles(uint32_t number_of_images, uint32_t number_of_query_images, uint64_t d_original, uint64_t d) {
+    cout << "INPUT ORIGINAL SPACE DATASET:" << endl;
     for (uint32_t i = 0; i < number_of_images; i++) {
         cout << "next image" << endl;
-        for (uint64_t j = 0; j < d; j++) {
-            cout << static_cast<unsigned>(all_images[i][j]) << '\t';
+        for (uint64_t j = 0; j < d_original; j++) {
+            cout << all_images_original_space[i][j] << '\t';
         }
         cout << endl;
     }
-    cout << "QUERY DATASET:" << endl;
+    cout << "QUERY ORIGINAL SPACE DATASET:" << endl;
+    for (uint32_t i = 0; i < number_of_query_images; i++) {
+        cout << "next image" << endl;
+        for (uint64_t j = 0; j < d_original; j++) {
+            cout << query_images_original_space[i][j] << '\t';
+        }
+        cout << endl;
+    }
+    cout << "INPUT NEW SPACE DATASET:" << endl;
+    for (uint32_t i = 0; i < number_of_images; i++) {
+        cout << "next image" << endl;
+        for (uint64_t j = 0; j < d; j++) {
+            cout << all_images[i][j] << '\t';
+        }
+        cout << endl;
+    }
+    cout << "QUERY NEW SPACE DATASET:" << endl;
     for (uint32_t i = 0; i < number_of_query_images; i++) {
         cout << "next image" << endl;
         for (uint64_t j = 0; j < d; j++) {
-            cout << static_cast<unsigned>(query_images[i][j]) << '\t';
+            cout << query_images[i][j] << '\t';
         }
         cout << endl;
     }
