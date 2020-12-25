@@ -27,7 +27,8 @@ int main(int argc, char **argv) {
         exit(ERROR);
     }
     do {
-        readFile(query_file_original_space, QUERY_FILE, &number_of_query_images, &d_query, k, l);
+        readFile(query_file_new_space, QUERY_FILE, &number_of_query_images, &d_query, k, l);
+        readFileOriginalSpace(query_file_original_space, QUERY_FILE, &number_of_query_images, &d_query, k, l);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
             approximateN_NNs(&o_file, d, k, n, l, q_num, number_of_images);
         }
