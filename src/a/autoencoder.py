@@ -19,14 +19,12 @@ def convolutionalAutoencoder():
 
     model.add(layers.Flatten())
     model.add(layers.Dense(10, activation='relu'))
-    # model.add(layers.Dropout(0.3))
+
     model.add(layers.Dense(1152, activation='relu'))
-
     model.add(layers.Reshape((3, 3, 128)))
-
     model.add(layers.Conv2DTranspose(64, kernel_size=3, strides=2, activation='relu'))
     model.add(layers.Conv2DTranspose(32, kernel_size=3, strides=2, activation='relu', padding='same'))
-    model.add(layers.Conv2DTranspose(1, kernel_size=3, strides=2, activation='sigmoid', padding='same'))
+    model.add(layers.Conv2DTranspose(1, kernel_size=3, strides=2, activation='relu', padding='same'))
 
     return model
 
@@ -42,8 +40,8 @@ def training(autoencoder, all_images, epochs=10, batch_size=128):
 	# To train it we will need the data
 	train, test = train_test_split(df, test_size=0.33, random_state=42)
 
-	train = train.astype('float32') / 255.
-	test = test.astype('float32') / 255.
+	# train = train.astype('float32') / 255.
+	# test = test.astype('float32') / 255.
 
 	train = train.to_numpy()
 	test = test.to_numpy()

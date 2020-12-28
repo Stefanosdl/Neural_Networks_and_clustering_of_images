@@ -76,7 +76,6 @@ def read_all_files(training_set, test_set):
 
 def writeToFile(normalized, path):
 	normalized.astype(np.ushort)
-	# TODO: CHANGE THE PATH
 	outputfile = open(path, "wb")
 	number_of_images = normalized.shape[0]
 	dimensions = normalized.shape[1]
