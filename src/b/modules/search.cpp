@@ -36,13 +36,13 @@ void calculateApproximationFactor(int number_of_query_images, int d_original, do
 }
 
 // Brute Force
-pair <unsigned int, unsigned int> approximateN_NN_Full_Search(uint64_t d, uint32_t q_num, int number_of_images, int* query_images, int* dataset) {
+pair <unsigned int, unsigned int> approximateN_NN_Full_Search(uint64_t d, uint32_t q_num, int number_of_images, int** new_query, int** dataset) {
     pair <unsigned int, unsigned int> n_neighbour;
     n_neighbour = make_pair(0, 4294967295);
     unsigned int current_distance = 0;
     // loop over the images array
     for (int i=0; i<number_of_images; i++) {
-        current_distance = manhattanDistance(query_images[q_num], dataset[i], d);
+        current_distance = manhattanDistance(new_query[q_num], dataset[i], d);
         if (current_distance < n_neighbour.second) {
             n_neighbour = make_pair(i, current_distance);
         }
