@@ -10,22 +10,44 @@
 #include "../headers/modulo.hpp"
 #include "../headers/hashtable.hpp"
 using namespace std;
+// times to be written in the end of the output file
+std::chrono::duration<double> elapsedLSH;
+std::chrono::duration<double> elapsedTrueNewSpace;
+std::chrono::duration<double> elapsedTrueOriginalSpace;
+// structures to keep data for calculation of the Approximation Factor
+vector <pair<int, unsigned int> > bruteNewSpaceNeighbours;
+vector <pair<int, unsigned int> > LSHNeighbours;
+vector <pair<int, unsigned int> > trueNeighbours;
+//
+void calculateApproximationFactor(int number_of_query_images, int d_original, double& approxFactorLSH, double& approxFactorNewSpace) {
+    // double approxFactorLSH = 0.0, approxFactorNewSpace = 0.0;
+    for (int i = 0; i < number_of_query_images; i++) {
+        // for LSH
+        if (LSHNeighbours[i].second != 0) {
+            approxFactorLSH += static_cast<double>(LSHNeighbours[i].second) / static_cast<double>(trueNeighbours[i].second);
+        }
+        // for New space 
+        unsigned int new_space_dist = manhattanDistance(query_images_original_space[i], all_images_original_space[bruteNewSpaceNeighbours[i].first], d_original);
+        approxFactorNewSpace += static_cast<double>(new_space_dist) / static_cast<double>(trueNeighbours[i].second);
+    }
+
+    approxFactorLSH /= static_cast<double>(number_of_query_images);
+    approxFactorNewSpace /= static_cast<double>(number_of_query_images);
+}
 
 // Brute Force
-vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t d, int n, uint32_t q_num, int number_of_images) {
-    vector<pair <unsigned int, unsigned int> > n_neighbours;
-    vector<pair <unsigned int, unsigned int> >::iterator it;
+pair <unsigned int, unsigned int> approximateN_NN_Full_Search(uint64_t d, uint32_t q_num, int number_of_images, int* query_images, int* dataset) {
+    pair <unsigned int, unsigned int> n_neighbour;
+    n_neighbour = make_pair(0, 4294967295);
     unsigned int current_distance = 0;
     // loop over the images array
     for (int i=0; i<number_of_images; i++) {
-        current_distance = manhattanDistance(query_images[q_num], all_images[i], d);
-        n_neighbours.push_back(make_pair(i, current_distance));
+        current_distance = manhattanDistance(query_images[q_num], dataset[i], d);
+        if (current_distance < n_neighbour.second) {
+            n_neighbour = make_pair(i, current_distance);
+        }
     }
-    sort(n_neighbours.begin(), n_neighbours.end(), [](const pair<unsigned int, unsigned int> &left, const pair<unsigned int, unsigned int> &right) {
-        return left.second < right.second;
-    });
-    if (n_neighbours.size() >  static_cast<unsigned int>(n)) n_neighbours.resize(n);
-    return n_neighbours;
+    return n_neighbour;
 }
 // two ways to find this
 // A. LSH
@@ -33,13 +55,14 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t
 // takes a N from user 
 // calls approximateNN with the correct way (A or B)
 // q_num: is an index of the query to search in the query_images[]
-void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t q_num, int number_of_images) {
-    vector<pair <unsigned int, unsigned int> > n_neighbours;
+void approximateN_NNs (ofstream* file, uint64_t d, int k, int L, uint32_t q_num, int number_of_images) {
+    pair <unsigned int, unsigned int> n_neighbours;
     unsigned int min_distance = inf;
     unsigned int current_gp = 0, current_gq = 0;
     unsigned int current_distance = 0;
     int pos_in_hash = 0;
-    vector<pair<unsigned int, unsigned int> > BNN;
+    pair<unsigned int, unsigned int> BNNNewSpace;
+    pair<unsigned int, unsigned int> BNNOriginalSpace;
     int hashtable_size = number_of_images / HASHTABLE_NUMBER;
     // we start putting neighbours from farthest to closest
     // calculating g(q)
@@ -62,7 +85,7 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t
             current_gp = HashTables[l][pos_in_hash][h].second;
             // delete the parray now
             if (current_distance < min_distance && current_gq == current_gp) {
-                n_neighbours.push_back(make_pair(HashTables[l][pos_in_hash][h].first, current_distance));
+                n_neighbours = make_pair(HashTables[l][pos_in_hash][h].first, current_distance);
                 min_distance = current_distance;
             }
             // take into account a maximum of (10 * L) points in each hashtable
@@ -75,25 +98,45 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t
     }
     
     auto finishLSH = chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsedLSH = finishLSH - startLSH;
+    elapsedLSH += finishLSH - startLSH;
 
-    reverse(n_neighbours.begin(), n_neighbours.end());
-    if (n_neighbours.size() > static_cast<unsigned int>(n)) n_neighbours.resize(n);
-    // write in output file
+    // Do Brute for new Space
 
-    auto startTrue = chrono::high_resolution_clock::now();
-    BNN = approximateN_NNs_Full_Search(d, n, q_num, number_of_images);
-    auto finishTrue = chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
+    auto startTrueNewSpace = chrono::high_resolution_clock::now();
+    BNNNewSpace = approximateN_NN_Full_Search(d, q_num, number_of_images, query_images, all_images);
+    auto finishTrueNewSpace = chrono::high_resolution_clock::now();
+    elapsedTrueNewSpace += finishTrueNewSpace - startTrueNewSpace;
 
+    // Do Brute for original Space
+
+    auto startTrueOriginalSpace = chrono::high_resolution_clock::now();
+    BNNOriginalSpace = approximateN_NN_Full_Search(d, q_num, number_of_images, query_images_original_space, all_images_original_space);
+    auto finishTrueOriginalSpace = chrono::high_resolution_clock::now();
+    elapsedTrueOriginalSpace += finishTrueOriginalSpace - startTrueOriginalSpace;
+    
+    // finish all brute forces write to file
     (*file) << "Query: " << q_num << endl;
-    for (unsigned int i = 0; i < n_neighbours.size(); i++) {
-        (*file) << "Nearest neighbour-" << i+1 << ": " << n_neighbours[i].first << endl;
-        (*file) << "distanceLSH: " << n_neighbours[i].second << endl;
-        (*file) << "distanceTrue: " << BNN[i].second << endl;
-    }
+    (*file) << "Nearest neighbor Reduced:" << BNNNewSpace.first << endl;
+    (*file) << "Nearest neighbor LSH:" << n_neighbours.first << endl;
+    (*file) << "Nearest neighbor True:" << BNNOriginalSpace.first << endl;
+    
+    (*file) << "distanceReduced: " << BNNNewSpace.second << endl;
+    (*file) << "distanceLSH: " << n_neighbours.second << endl;
+    (*file) << "distanceTrue: " << BNNOriginalSpace.second << endl;
+
+    // push back to the global structs the findings for this image
+    bruteNewSpaceNeighbours.push_back(BNNNewSpace);
+    LSHNeighbours.push_back(n_neighbours);
+    trueNeighbours.push_back(BNNOriginalSpace);
+}
+
+void writeLastMeta(ofstream* file, int number_of_query_images, int d_original) {
+    double approxFactorLSH = 0.0, approxFactorNewSpace = 0.0;
+    calculateApproximationFactor(number_of_query_images, d_original, approxFactorLSH, approxFactorNewSpace);
+    (*file) << endl << "tReduced: " << elapsedTrueNewSpace.count() << endl;
     (*file) << "tLSH: " << elapsedLSH.count() << endl;
-    (*file) << "tTrue: " << elapsedTrue.count() << endl;
-    BNN.clear();
-    n_neighbours.clear();
+    (*file) << "tTrue: " << elapsedTrueOriginalSpace.count() << endl;
+    
+    (*file) << "Approximation Factor LSH: " << approxFactorLSH << endl;
+    (*file) << "Approximation Factor Reduced: " << approxFactorNewSpace << endl;
 }

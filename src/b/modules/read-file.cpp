@@ -70,7 +70,6 @@ uint16_t *openMMap(string name, long &size) {
 void readFile(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d, int k, int L) {
     long length;
     uint16_t *mmfile = openMMap(filename, length);
-
     uint32_t* memblockmm;
     uint16_t* buffer;
     memblockmm = (uint32_t *)mmfile; //cast file to uint32 array
@@ -100,25 +99,12 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
     int dimensions = *d;
     int offset = 0;
     if (file_type == INPUT_FILE) {
-        initializeHashtables(L, image_number);
-        unsigned int g_x = 0;
         all_images = new int *[image_number];
         for (int image = 0; image < (int)image_number; image++) {
             all_images[image] = new int[dimensions];
             for (int i = 0; i < dimensions; i++) {
                 all_images[image][i] = (int)buffer[offset];
                 offset++;
-                if(image < 1){
-                    cout <<all_images[image][i] << '\t';
-                }
-            }
-            if(image < 1){
-                cout << endl;
-            }
-            for (int l = 0; l < L; l++) {
-                g_x = calculateG_X(k, dimensions, image, INPUT_FILE);
-                // pass to hashtable
-                insertToHashtable(l, image, g_x, image_number);
             }
         }
     }
@@ -130,17 +116,10 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
             query_images[image] = new int[dimensions];
             for (int i = 0; i < dimensions; i++) {
                 query_images[image][i] = (int)buffer[offset];
-                offset++;
-                if(image < 1){
-                    cout <<query_images[image][i] << '\t';
-                }
-            }
-            if(image < 1){
-                cout << endl;
+                offset++;   
             }
         }
     }
-
     munmap(mmfile, length);
 }
 
@@ -166,7 +145,6 @@ uint8_t *openMMapOriginalSpace(string name, long &size) {
 void readFileOriginalSpace(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d, int k, int L) {
     long length;
     uint8_t *mmfile = openMMapOriginalSpace(filename, length);
-    cout<<"ORIGINAL INPUT"<<endl;
     uint32_t* memblockmm;
     uint8_t* buffer;
     memblockmm = (uint32_t *)mmfile; //cast file to uint32 array
@@ -200,14 +178,7 @@ void readFileOriginalSpace(const string& filename, int file_type, uint32_t* numb
             for (int i = 0; i < dimensions; i++) {
                 all_images_original_space[image][i] = (int)buffer[offset];
                 offset++;
-                if(image < 1){
-                    cout <<all_images_original_space[image][i] << '\t';
-                }
             }
-            if(image < 1){
-                cout << endl;
-            }
-
             for (int l = 0; l < L; l++) {
                 g_x = calculateG_X(k, *d, image, INPUT_FILE);
                 // pass to hashtable
@@ -224,15 +195,8 @@ void readFileOriginalSpace(const string& filename, int file_type, uint32_t* numb
             for (int i = 0; i < dimensions; i++) {
                 query_images_original_space[image][i] = (int)buffer[offset];
                 offset++;
-                if(image < 1){
-                    cout <<query_images_original_space[image][i] << '\t';
-                }
-            }
-            if(image < 1){
-                cout << endl;
             }
         }
-
     }
 
     munmap(mmfile, length);
