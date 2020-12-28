@@ -11,9 +11,9 @@
 #include "../headers/hashtable.hpp"
 using namespace std;
 // times to be written in the end of the output file
-std::chrono::duration<double> elapsedLSH;
-std::chrono::duration<double> elapsedTrueNewSpace;
-std::chrono::duration<double> elapsedTrueOriginalSpace;
+chrono::duration<double> elapsedLSH;
+chrono::duration<double> elapsedTrueNewSpace;
+chrono::duration<double> elapsedTrueOriginalSpace;
 // structures to keep data for calculation of the Approximation Factor
 vector <pair<int, unsigned int> > bruteNewSpaceNeighbours;
 vector <pair<int, unsigned int> > LSHNeighbours;
@@ -55,7 +55,7 @@ pair <unsigned int, unsigned int> approximateN_NN_Full_Search(uint64_t d, uint32
 // takes a N from user 
 // calls approximateNN with the correct way (A or B)
 // q_num: is an index of the query to search in the query_images[]
-void approximateN_NNs (ofstream* file, uint64_t d, int k, int L, uint32_t q_num, int number_of_images) {
+void approximateN_NNs (ofstream* file, uint64_t d_original, uint64_t d, int k, int L, uint32_t q_num, int number_of_images) {
     pair <unsigned int, unsigned int> n_neighbours;
     unsigned int min_distance = inf;
     unsigned int current_gp = 0, current_gq = 0;
@@ -66,7 +66,7 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int L, uint32_t q_num,
     int hashtable_size = number_of_images / HASHTABLE_NUMBER;
     // we start putting neighbours from farthest to closest
     // calculating g(q)
-    current_gq = calculateG_X(k, d, q_num, QUERY_FILE);
+    current_gq = calculateG_X(k, d_original, q_num, QUERY_FILE);
     pos_in_hash = customModulo(current_gq, hashtable_size);
     if (pos_in_hash > hashtable_size - 1) {
         // then something went wrong with g(p)
@@ -81,7 +81,7 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int L, uint32_t q_num,
             // calculate the Manhattan distance of q and every other image in the bucket
             // distance between HashTables[l][pos_in_hash][h], and query_image[q_num]
             // calculate distance and g_p
-            current_distance = manhattanDistance(query_images[q_num], all_images[HashTables[l][pos_in_hash][h].first], d);
+            current_distance = manhattanDistance(query_images_original_space[q_num], all_images_original_space[HashTables[l][pos_in_hash][h].first], d_original);
             current_gp = HashTables[l][pos_in_hash][h].second;
             // delete the parray now
             if (current_distance < min_distance && current_gq == current_gp) {
@@ -110,7 +110,7 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int L, uint32_t q_num,
     // Do Brute for original Space
 
     auto startTrueOriginalSpace = chrono::high_resolution_clock::now();
-    BNNOriginalSpace = approximateN_NN_Full_Search(d, q_num, number_of_images, query_images_original_space, all_images_original_space);
+    BNNOriginalSpace = approximateN_NN_Full_Search(d_original, q_num, number_of_images, query_images_original_space, all_images_original_space);
     auto finishTrueOriginalSpace = chrono::high_resolution_clock::now();
     elapsedTrueOriginalSpace += finishTrueOriginalSpace - startTrueOriginalSpace;
     

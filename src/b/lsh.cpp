@@ -28,8 +28,9 @@ int main(int argc, char **argv) {
     do {
         readFile(query_file_new_space, QUERY_FILE, &number_of_query_images, &d, k, l);
         readFileOriginalSpace(query_file_original_space, QUERY_FILE, &number_of_query_images, &d_original, k, l);
+        // printFiles(number_of_images, number_of_query_images, d_original, d);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
-            approximateN_NNs(&o_file, d, k, l, q_num, number_of_images);
+            approximateN_NNs(&o_file, d_original, d, k, l, q_num, number_of_images);
         }
         writeLastMeta(&o_file, number_of_query_images, d_original);
         w = 400;

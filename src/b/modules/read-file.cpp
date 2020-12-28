@@ -90,11 +90,6 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
     *d = number_of_columns * number_of_rows;
     *number_of_images = image_number;
     buffer = static_cast<uint16_t *>(mmfile);
-    
-    cout << magic_number << '\n';
-    cout << image_number << '\n';
-    cout << number_of_rows << '\n';
-    cout << number_of_columns << '\n';
 
     int dimensions = *d;
     int offset = 0;

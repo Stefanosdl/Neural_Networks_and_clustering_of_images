@@ -12,7 +12,7 @@ void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number
 	auto sum = 0;
 	for (uint32_t q=0; q<number_of_query_images; q++){
 		for (uint32_t image=0; image<number_of_images; image++){
-			sum += manhattanDistance(query_images[q], all_images[image], d);
+			sum += manhattanDistance(query_images_original_space[q], all_images_original_space[image], d);
 		}
 	}
 	w = sum / (50*number_of_images);
@@ -68,8 +68,8 @@ unsigned long calculateH_XComponent(uint64_t d, int* x_i_array) {
 int createH_X (uint64_t d, int image, int file_type) {
 	// then calculate hx
 	int hx = file_type == INPUT_FILE ? \
-		calculateH_XComponent(d, all_images[image]) : \
-		calculateH_XComponent(d, query_images[image]);
+		calculateH_XComponent(d, all_images_original_space[image]) : \
+		calculateH_XComponent(d, query_images_original_space[image]);
     return hx;
 }
 
