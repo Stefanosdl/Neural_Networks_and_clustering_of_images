@@ -20,18 +20,19 @@ vector <pair<int, unsigned int> > LSHNeighbours;
 vector <pair<int, unsigned int> > trueNeighbours;
 //
 void calculateApproximationFactor(int number_of_query_images, int d_original, double& approxFactorLSH, double& approxFactorNewSpace) {
-    // double approxFactorLSH = 0.0, approxFactorNewSpace = 0.0;
+    int num_LSH_neighbors = 0;
     for (int i = 0; i < number_of_query_images; i++) {
         // for LSH
         if (LSHNeighbours[i].second != 0) {
             approxFactorLSH += static_cast<double>(LSHNeighbours[i].second) / static_cast<double>(trueNeighbours[i].second);
+            num_LSH_neighbors++;
         }
         // for New space 
         unsigned int new_space_dist = manhattanDistance(query_images_original_space[i], all_images_original_space[bruteNewSpaceNeighbours[i].first], d_original);
         approxFactorNewSpace += static_cast<double>(new_space_dist) / static_cast<double>(trueNeighbours[i].second);
     }
 
-    approxFactorLSH /= static_cast<double>(number_of_query_images);
+    approxFactorLSH /= static_cast<double>(num_LSH_neighbors);
     approxFactorNewSpace /= static_cast<double>(number_of_query_images);
 }
 
