@@ -171,5 +171,7 @@ dmypy.json
 lsh
 cube
 cluster
+search
 # Custom ignores
 Datasets
+output_file
