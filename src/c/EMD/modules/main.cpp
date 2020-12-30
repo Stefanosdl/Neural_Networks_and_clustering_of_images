@@ -1,33 +1,30 @@
 #include <iostream>
 #include <numeric> // std::iota
-
 #include "../headers/wassersten.h"
 using namespace std;
+double EMDdistance(int* query_image, size_t size_query_image, int* test_image, size_t size_test_image);
 
 int main(int argc, char **argv) {
-    vector<int> aw;
-    vector<int> av;
+    int query_image[] = {0,1,3};
+    int test_image[] = {5,6,8};
+    // ............... Call EMD
+    size_t size_q = sizeof query_image;
+    size_t size_t = sizeof test_image;
+    cout << EMDdistance(query_image, size_q, test_image, size_t) << endl;
+}
 
-    vector<int> bw;
-    vector<int> bv;
+double EMDdistance(int* query_image, size_t size_query_image, int* test_image, size_t size_test_image) {
+    vector<int> av(query_image, query_image + size_query_image / sizeof query_image[0]);
+    vector<int> bv(test_image, test_image + size_test_image / sizeof test_image[0]);
+    vector<int> weights;
 
-    aw.push_back(1);
-    aw.push_back(1);
-    aw.push_back(1);
-    av.push_back(0);
-    av.push_back(1);
-    av.push_back(3);
-    iota(av.begin(), av.end(), 0);
+    for (unsigned int i = 0; i < av.size(); i++){
+        weights.push_back(1);
+    }
 
-    bw.push_back(1);
-    bw.push_back(1);
-    bw.push_back(1);
-    bv.push_back(5);
-    bv.push_back(6);
-    bv.push_back(8);
-    iota(bv.begin(), bv.end(), 0);
-    double dist;
-
-    dist = wasserstein(av,aw,bv,bw);
-    cout << "The earth movers distance is: " << dist << endl;
+    double dist = wasserstein(av, weights, bv, weights);
+    av.clear();
+    bv.clear();
+    weights.clear();
+    return dist;
 }
