@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <numeric> // std::iota
 #include <vector>
-#include "../headers/wassersten.h"
+#include "../headers/wasserstein.hpp"
 using namespace std;
 
 void argsort(const vector<int> &v, vector<int> &idx) {

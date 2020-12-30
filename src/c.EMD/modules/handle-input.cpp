@@ -8,8 +8,8 @@ using namespace std;
 
 int** all_images_original_space = NULL;
 int** query_images_original_space = NULL;
-int** all_images_images_labels = NULL;
-int** query_images_labels = NULL;
+int* all_images_labels = NULL;
+int* query_images_labels = NULL;
 
 void handleReExecution (
 	uint32_t *number_of_images, 
@@ -99,14 +99,13 @@ void handleInput(
 	string *query_file_original_space,
 	string *labels_query
 	){
-	string input_file_original_space, labels_input, param, emd;
+	string input_file_original_space, labels_input, param;
 	// First we need to check for the least amount of arguments required
 	// Which are 11 since we need 4 files with their param and the executable
 	if (argc < 12) {
 		cerr << "You need to provide the path of the files" << endl;
 		exit(ERROR);
 	}
-
 	param = argv[1];
 	// get the path files
 	if (param != "-d") {
@@ -136,23 +135,20 @@ void handleInput(
 	}
 	*labels_query = argv[8];
 
-	for (int i = 9; i < argc; i++) {
-		param = argv[i];
-		if (!argv[i+1]) exit(ERROR);
-		if (param == "-EMD") emd = param;
-		else if (param == "-o") *output_file = argv[++i];
-	}
-
-	if (output_file->empty()) {
+	param = argv[9];
+	if (param != "-o") {
 		cerr << "You need to provide the output_file path" << endl;
 		exit(ERROR);
 	}
-	
-	if (emd.empty()) {
+	*output_file = argv[10];
+
+	param = argv[11];
+	if (param != "-EMD") {
 		cerr << "You need to provide the EMD parameter" << endl;
 		exit(ERROR);
 	}
-	// read data from the input_file 
+
+	// read data from the input_file
 	readFileOriginalSpace(input_file_original_space, INPUT_FILE, number_of_images, d_original);
 	readFileOriginalSpace(labels_input, INPUT_LABELS, number_of_images, d_original);
 	// returning these values to main to continue execution
