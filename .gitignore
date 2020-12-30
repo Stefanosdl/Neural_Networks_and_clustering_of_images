@@ -172,6 +172,7 @@ lsh
 cube
 cluster
 search
+test
 # Custom ignores
 Datasets
 output_file
