@@ -85,4 +85,3 @@ double wasserstein(vector<int> &A, vector<int> AWeights, vector<int> &B, vector<
     computeCDF(BWeights, idxB, cdfIdxB, cdfB);
     return computeDist(cdfA, cdfB, deltas);
 }
-// g++ -std=c++11 -O3 main.cpp wasserstein.cpp -o test
