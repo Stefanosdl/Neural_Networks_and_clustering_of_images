@@ -53,4 +53,5 @@ if __name__ == "__main__":
     p1 = [0,1,3]
     p2 = [5,6,8]
 
-    print(EarthMoverDistance(p1, p2))
+    # print(EarthMoverDistance(p1, p2))
+    handle
