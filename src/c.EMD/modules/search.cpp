@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include "../headers/distances.hpp"
-#include "headers/wasserstein.hpp"
+#include "../headers/wasserstein.hpp"
+#include "../headers/handle-input.hpp"
 using namespace std;
 
 unsigned int manhattanDistance(int* x, int* y, uint64_t n) {
@@ -30,7 +30,6 @@ vector<pair <int, unsigned int> > Brute_Force(uint64_t d_original, int n, uint32
 
     return n_neighbours;
 }
-
 
 double EMDdistance(int* query_image, size_t size_query_image, int* test_image, size_t size_test_image) {
     vector<int> av(query_image, query_image + size_query_image / sizeof query_image[0]);
