@@ -80,7 +80,6 @@ void readFileOriginalSpace(const string& filename, int file_type, uint32_t* numb
     image_number = __builtin_bswap32(image_number);
     
     *number_of_images = image_number;
-    cout<<"NN  "<<file_type<<"'\t'"<<*number_of_images<<endl;
     // change memblockmm to int *
     buffer = static_cast<uint8_t *>(mmfile);
 

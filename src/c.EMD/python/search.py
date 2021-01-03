@@ -3,7 +3,6 @@ from reader import handleInput, read_all_files
 from brute import bruteForce
 import time
 
-
 def main(argv):
 	
 	p1 = [0,1,3]
@@ -25,5 +24,6 @@ def main(argv):
 		trueTime = trueTime + (end - start)
 		# ofile.write()
 	ofile.close()
+
 if __name__ == "__main__":
 	main(sys.argv[1:])

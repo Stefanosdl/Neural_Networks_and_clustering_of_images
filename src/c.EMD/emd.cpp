@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "headers/common.hpp"
 #include "headers/search.hpp"
 #include "headers/handle-input.hpp"
@@ -21,6 +22,7 @@ int main(int argc, char **argv) {
     string output_file, query_file_original_space, labels_query;
     ofstream o_file;
     set<vector<int> > Brute;
+    chrono::duration<double> elapsedBruteTimer;
 
     handleInput(argc, argv, &number_of_images, &d_original, &output_file, &query_file_original_space, &labels_query);
     // open output file
@@ -32,18 +34,18 @@ int main(int argc, char **argv) {
     do {
         readFileOriginalSpace(query_file_original_space, QUERY_FILE, &number_of_query_images, &d_original);
         readFileOriginalSpace(labels_query, QUERY_LABELS, &number_of_query_images, &d_original);
-        
-        // printFiles(number_of_images, number_of_query_images, d_original);
+        auto startBruteTimer = chrono::high_resolution_clock::now();
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
             // Brute
             Brute_Force(d_original, q_num, number_of_images, Brute);
-            // EMD
         }
-        cout<<"TELOS BRUTE"<<endl;
-        for (auto it = Brute.begin(); it != Brute.end(); it++) { 
-            Print_Vector(*it); 
-        } 
-        // writeLastMeta(&o_file, number_of_query_images, d_original);
+        auto finishBruteTimer = chrono::high_resolution_clock::now();
+        elapsedBruteTimer += finishBruteTimer - startBruteTimer;
+        cout << "Brute Timer is: " << elapsedBruteTimer.count() << endl;
+
+        for (auto it = Brute.begin(); it != Brute.end(); it++) {
+            Print_Vector(*it);
+        }
         o_file.close();
         
         handleReExecution(&number_of_images, &d_original, &output_file, &query_file_original_space, &labels_query);
@@ -67,6 +69,12 @@ int main(int argc, char **argv) {
     delete[] query_images_original_space;
     delete[] all_images_labels;
     delete[] query_images_labels;
+
+    // call python file for EMD
+    // FILE *fd = fopen("MUL.py", "r");
+    // PyRun_SimpleFileEx(fd, "MUL.py", 1); // last parameter == 1 means to close the
+                                     // file before returning.
+
     return SUCCESS;
     
     // int query_image[] = {0,1,3};
