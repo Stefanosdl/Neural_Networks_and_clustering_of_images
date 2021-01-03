@@ -50,6 +50,8 @@ def handleInput(argv):
 		sys.exit("You need to provide a input_labels file path")
 	elif not query_labels:
 		sys.exit("You need to provide a query_labels file path")
+	elif not output_file:
+		sys.exit("You need to provide a output_file file path")
 	return (input_file_orifinal_space, query_file_orifinal_space, input_labels, query_labels, output_file)
 
 def reader(dataset):
@@ -88,7 +90,7 @@ def reader(dataset):
 	# remove last item number_of_images index that is anyway an empty list
 	all_images.popitem()
 	# return all_images dict
-	return all_images
+	return all_images, dimensions, number_of_images
 
 def reader_labels(dataset):
 	# create a dictionary of lists to store all images
@@ -112,9 +114,9 @@ def reader_labels(dataset):
 
 
 def read_all_files(training_set, training_labels, test_set, test_labels):
-	train_images = reader(training_set)
+	all_images, dimensions, number_of_input_images = reader(training_set)
 	train_labels = reader_labels(training_labels) 
-	test_images = reader(test_set)
+	query_images, dimensions, number_of_query_images = reader(test_set)
 	test_labels = reader_labels(test_labels)
 	# labels are lists of 10000 items
-	return (train_images, train_labels, test_images, test_labels)
+	return (all_images, train_labels, query_images, test_labels, number_of_input_images, number_of_query_images, dimensions)

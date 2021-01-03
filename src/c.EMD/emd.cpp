@@ -1,9 +1,18 @@
 #include <iostream>
-#include <Python/Python.h>
 #include "headers/common.hpp"
 #include "headers/search.hpp"
 #include "headers/handle-input.hpp"
+#include <vector>
+#include <set>
 using namespace std;
+
+void Print_Vector(vector<int> Vec) {
+    for (unsigned int i = 0; i < Vec.size(); i++) {
+        cout << Vec[i] << " ";
+    }
+    cout << endl;
+    return;
+}
 
 int main(int argc, char **argv) {
     uint32_t number_of_images = 0;
@@ -11,40 +20,7 @@ int main(int argc, char **argv) {
     uint64_t d_original = 0;
     string output_file, query_file_original_space, labels_query;
     ofstream o_file;
-
-    // Begin Python interface
-    PyObject *pName, *pModule, *pDict, *pFunc, *pValue, *presult;
-    // Initialize the Python Interpreter
-    Py_Initialize();
-    // Build the name object
-    pName = PyString_FromString((char*)"emd");
-    // Load the module object
-    pModule = PyImport_Import(pName);
-    // pDict is a borrowed reference 
-    pDict = PyModule_GetDict(pModule);
-    // pFunc is also a borrowed reference 
-    pFunc = PyDict_GetItemString(pDict, (char*)"someFunction");
-
-    if (PyCallable_Check(pFunc)) {
-        pValue=Py_BuildValue("(z)",(char*)"something");
-        PyErr_Print();
-        printf("Let's give this a shot!\n");
-        presult=PyObject_CallObject(pFunc,pValue);
-        PyErr_Print();
-    } else {
-        PyErr_Print();
-    }
-    printf("Result is %d\n",PyInt_AsLong(presult));
-    Py_DECREF(pValue);
-
-    // Clean up
-    Py_DECREF(pModule);
-    Py_DECREF(pName);
-
-    // Finish the Python Interpreter
-    Py_Finalize();
-
-    cout << "Finished with python" << endl;
+    set<vector<int> > Brute;
 
     handleInput(argc, argv, &number_of_images, &d_original, &output_file, &query_file_original_space, &labels_query);
     // open output file
@@ -60,10 +36,13 @@ int main(int argc, char **argv) {
         // printFiles(number_of_images, number_of_query_images, d_original);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
             // Brute
-            
+            Brute_Force(d_original, q_num, number_of_images, Brute);
             // EMD
-
         }
+        cout<<"TELOS BRUTE"<<endl;
+        for (auto it = Brute.begin(); it != Brute.end(); it++) { 
+            Print_Vector(*it); 
+        } 
         // writeLastMeta(&o_file, number_of_query_images, d_original);
         o_file.close();
         

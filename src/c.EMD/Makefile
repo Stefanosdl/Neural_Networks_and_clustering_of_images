@@ -13,7 +13,7 @@ all: $(OUT)
 
 # Executables
 search : $(OBJS)
-	$(CXX) $(FLAGS) -shared $(OBJS) -o search -framework Python
+	$(CXX) -g $(OBJS) -o search
 
 # Final object files
 emd.o : $(SOURCE) $(HEADERS)

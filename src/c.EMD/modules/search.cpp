@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include "../headers/wasserstein.hpp"
 #include "../headers/handle-input.hpp"
@@ -14,8 +15,9 @@ unsigned int manhattanDistance(int* x, int* y, uint64_t n) {
 }
 
 // Brute Force
-vector<pair <int, unsigned int> > Brute_Force(uint64_t d_original, int n, uint32_t q_num, int number_of_images) {
+void Brute_Force(uint64_t d_original, uint32_t q_num, int number_of_images, set<vector<int> > &Brute) {
     vector<pair <int, unsigned int> > n_neighbours;
+    vector<int> neighbours;
     unsigned int current_distance = 0;
 
     // loop over the images array
@@ -26,23 +28,12 @@ vector<pair <int, unsigned int> > Brute_Force(uint64_t d_original, int n, uint32
     sort(n_neighbours.begin(), n_neighbours.end(), [](const pair<unsigned int, unsigned int> &left, const pair<unsigned int, unsigned int> &right) {
         return left.second < right.second;
     });
-    if (n_neighbours.size() > static_cast<unsigned int>(n)) n_neighbours.resize(n);
+    if (n_neighbours.size() > static_cast<unsigned int>(N)) n_neighbours.resize(N);
 
-    return n_neighbours;
-}
-
-double EMDdistance(int* query_image, size_t size_query_image, int* test_image, size_t size_test_image) {
-    vector<int> av(query_image, query_image + size_query_image / sizeof query_image[0]);
-    vector<int> bv(test_image, test_image + size_test_image / sizeof test_image[0]);
-    vector<int> weights;
-
-    for (unsigned int i = 0; i < av.size(); i++){
-        weights.push_back(1);
+    for (unsigned int i=0; i<n_neighbours.size(); i++) {
+        neighbours.push_back(n_neighbours[i].first);
     }
 
-    double dist = wasserstein(av, weights, bv, weights);
-    av.clear();
-    bv.clear();
-    weights.clear();
-    return dist;
+    Brute.insert(neighbours);
+    neighbours.clear();
 }
