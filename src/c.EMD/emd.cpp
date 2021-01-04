@@ -4,8 +4,8 @@
 #include "headers/search.hpp"
 #include "headers/handle-input.hpp"
 #include <vector>
+#include <string>
 #include <set>
-#include <Python/Python.h>
 
 using namespace std;
 
@@ -36,6 +36,16 @@ int main(int argc, char **argv) {
     do {
         readFileOriginalSpace(query_file_original_space, QUERY_FILE, &number_of_query_images, &d_original);
         readFileOriginalSpace(labels_query, QUERY_LABELS, &number_of_query_images, &d_original);
+
+        string params = ("/usr/bin/python3 ./search.py ");
+        for (int i=1; i<argc ; i++) {
+            params += argv[i];
+            params += " ";
+        }
+        int result = system(params.c_str());
+        // int result = system((string("/usr/bin/python3 ./python/emd.py ") + string(argv)).c_str());
+        cout << result;
+
         auto startBruteTimer = chrono::high_resolution_clock::now();
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
             // Brute
@@ -73,10 +83,6 @@ int main(int argc, char **argv) {
     delete[] query_images_labels;
 
 
-	FILE* fp = fopen("./python/emd.py", "r");
-	Py_Initialize();
-	PyRun_SimpleFileEx(fp, "./python/emd.py", 1);
-	Py_Finalize();
     
     return SUCCESS;
     

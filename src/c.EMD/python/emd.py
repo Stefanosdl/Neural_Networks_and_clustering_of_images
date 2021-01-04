@@ -1,3 +1,4 @@
+import sys
 import math
 from collections import Counter
 from collections import defaultdict
@@ -52,5 +53,6 @@ def EarthMoverDistance(p1, p2):
 if __name__ == "__main__":
     p1 = [0,1,3]
     p2 = [5,6,8]
+    print(sys.argv[1:])
     print(EarthMoverDistance(p1, p2))
 
