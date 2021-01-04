@@ -36,14 +36,13 @@ int main(int argc, char **argv) {
     do {
         readFileOriginalSpace(query_file_original_space, QUERY_FILE, &number_of_query_images, &d_original);
         readFileOriginalSpace(labels_query, QUERY_LABELS, &number_of_query_images, &d_original);
-
+        // Start the EMD 
         string params = ("/usr/bin/python3 ./search.py ");
         for (int i=1; i<argc ; i++) {
             params += argv[i];
             params += " ";
         }
         int result = system(params.c_str());
-        // int result = system((string("/usr/bin/python3 ./python/emd.py ") + string(argv)).c_str());
         cout << result;
 
         auto startBruteTimer = chrono::high_resolution_clock::now();
