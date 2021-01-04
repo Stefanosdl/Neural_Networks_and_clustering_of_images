@@ -5,6 +5,8 @@
 #include "headers/handle-input.hpp"
 #include <vector>
 #include <set>
+#include <Python/Python.h>
+
 using namespace std;
 
 void Print_Vector(vector<int> Vec) {
@@ -43,9 +45,9 @@ int main(int argc, char **argv) {
         elapsedBruteTimer += finishBruteTimer - startBruteTimer;
         cout << "Brute Timer is: " << elapsedBruteTimer.count() << endl;
 
-        for (auto it = Brute.begin(); it != Brute.end(); it++) {
-            Print_Vector(*it);
-        }
+        // for (auto it = Brute.begin(); it != Brute.end(); it++) {
+        //     Print_Vector(*it);
+        // }
         o_file.close();
         
         handleReExecution(&number_of_images, &d_original, &output_file, &query_file_original_space, &labels_query);
@@ -70,11 +72,12 @@ int main(int argc, char **argv) {
     delete[] all_images_labels;
     delete[] query_images_labels;
 
-    // call python file for EMD
-    // FILE *fd = fopen("MUL.py", "r");
-    // PyRun_SimpleFileEx(fd, "MUL.py", 1); // last parameter == 1 means to close the
-                                     // file before returning.
 
+	FILE* fp = fopen("./python/emd.py", "r");
+	Py_Initialize();
+	PyRun_SimpleFileEx(fp, "./python/emd.py", 1);
+	Py_Finalize();
+    
     return SUCCESS;
     
     // int query_image[] = {0,1,3};
