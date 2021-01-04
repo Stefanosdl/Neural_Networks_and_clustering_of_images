@@ -3,7 +3,6 @@
 #include <unordered_map>
 #include <algorithm>
 #include <fstream>
-#include "../headers/wasserstein.hpp"
 #include "../headers/handle-input.hpp"
 using namespace std;
 

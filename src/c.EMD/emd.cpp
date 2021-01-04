@@ -1,11 +1,11 @@
 #include <iostream>
 #include <chrono>
-#include "headers/common.hpp"
-#include "headers/search.hpp"
-#include "headers/handle-input.hpp"
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include "headers/common.hpp"
+#include "headers/search.hpp"
+#include "headers/handle-input.hpp"
 
 using namespace std;
 
@@ -40,16 +40,20 @@ int main(int argc, char **argv) {
 
         Evaluate_Results(SAMPLE, Brute, &o_file);
 
-        // Call python file to run EMD algorithm
-        // string params = ("/usr/bin/python3 ./search.py ");
-        // for (int i=1; i<argc ; i++) {
-        //     params += argv[i];
-        //     params += " ";
-        // }
-        // int result = system(params.c_str());
-
         o_file.close();
-        
+
+        // Call python file to run EMD algorithm
+        string params = ("/usr/bin/python3 ./search.py ");
+        for (int i=1; i<argc ; i++) {
+            params += argv[i];
+            params += " ";
+        }
+
+        if(system(params.c_str()) < 0) {
+            cerr << "Can't run python file" << endl;
+            exit(ERROR);
+        }
+
         handleReExecution(&number_of_images, &d_original, &output_file, &query_file_original_space, &labels_query);
         // open output file
         o_file.open(output_file);

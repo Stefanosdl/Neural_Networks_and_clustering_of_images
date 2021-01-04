@@ -4,6 +4,20 @@ from collections import Counter
 from collections import defaultdict
 from ortools.linear_solver import pywraplp
 
+def Evaluate_Results(number_of_query_images, neighbours, ofile, query_labels, input_labels, N):
+    # Number of images to be evaluated
+    sum = 0;
+    total_value = 0.0;
+    for i in range (number_of_query_images):
+        # umber of neighbours per image
+        for j in range(N):
+            if (input_labels[neighbours[i][j]] == query_labels[i]):
+                sum += 1;
+
+    total_value = sum/(number_of_query_images*N);
+    # write to file
+    ofile.write("Average Correct Search Results EMD: " + str(total_value))
+
 def euclidean_distance(x, y):
     return math.sqrt((x - y)**2)
 
@@ -45,7 +59,5 @@ def EarthMoverDistance(p1, p2):
     for ((x, y), variable) in variables.items():
         if variable.solution_value() != 0:
             cost = euclidean_distance(x, y) * variable.solution_value()
-            # print("move {} dirt from {} to {} for a cost of {}".format(
-                # variable.solution_value(), x, y, cost))
 
     return objective.Value()
