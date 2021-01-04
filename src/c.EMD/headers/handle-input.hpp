@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <fstream>
 #define N 10
+#define SAMPLE 20
 
 extern int **all_images_original_space;
 extern int **query_images_original_space;

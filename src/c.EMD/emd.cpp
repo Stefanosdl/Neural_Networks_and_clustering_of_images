@@ -5,17 +5,9 @@
 #include "headers/handle-input.hpp"
 #include <vector>
 #include <string>
-#include <set>
+#include <unordered_map>
 
 using namespace std;
-
-void Print_Vector(vector<int> Vec) {
-    for (unsigned int i = 0; i < Vec.size(); i++) {
-        cout << Vec[i] << " ";
-    }
-    cout << endl;
-    return;
-}
 
 int main(int argc, char **argv) {
     uint32_t number_of_images = 0;
@@ -23,7 +15,7 @@ int main(int argc, char **argv) {
     uint64_t d_original = 0;
     string output_file, query_file_original_space, labels_query;
     ofstream o_file;
-    set<vector<int> > Brute;
+    unordered_map<int , vector<int> > Brute;
     chrono::duration<double> elapsedBruteTimer;
 
     handleInput(argc, argv, &number_of_images, &d_original, &output_file, &query_file_original_space, &labels_query);
@@ -36,17 +28,9 @@ int main(int argc, char **argv) {
     do {
         readFileOriginalSpace(query_file_original_space, QUERY_FILE, &number_of_query_images, &d_original);
         readFileOriginalSpace(labels_query, QUERY_LABELS, &number_of_query_images, &d_original);
-        // Start the EMD 
-        string params = ("/usr/bin/python3 ./search.py ");
-        for (int i=1; i<argc ; i++) {
-            params += argv[i];
-            params += " ";
-        }
-        int result = system(params.c_str());
-        cout << result;
 
         auto startBruteTimer = chrono::high_resolution_clock::now();
-        for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
+        for (uint32_t q_num = 0; q_num < SAMPLE; q_num++) {
             // Brute
             Brute_Force(d_original, q_num, number_of_images, Brute);
         }
@@ -54,9 +38,16 @@ int main(int argc, char **argv) {
         elapsedBruteTimer += finishBruteTimer - startBruteTimer;
         cout << "Brute Timer is: " << elapsedBruteTimer.count() << endl;
 
-        // for (auto it = Brute.begin(); it != Brute.end(); it++) {
-        //     Print_Vector(*it);
+        Evaluate_Results(SAMPLE, Brute, &o_file);
+
+        // Call python file to run EMD algorithm
+        // string params = ("/usr/bin/python3 ./search.py ");
+        // for (int i=1; i<argc ; i++) {
+        //     params += argv[i];
+        //     params += " ";
         // }
+        // int result = system(params.c_str());
+
         o_file.close();
         
         handleReExecution(&number_of_images, &d_original, &output_file, &query_file_original_space, &labels_query);
@@ -84,11 +75,4 @@ int main(int argc, char **argv) {
 
     
     return SUCCESS;
-    
-    // int query_image[] = {0,1,3};
-    // int test_image[] = {5,6,8};
-    // // ............... Call EMD
-    // size_t size_q = sizeof query_image;
-    // size_t size_t = sizeof test_image;
-    // cout << EMDdistance(query_image, size_q, test_image, size_t) << endl;
 }

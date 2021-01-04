@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
-#include <set>
+#include <unordered_map>
 #include <algorithm>
+#include <fstream>
 #include "../headers/wasserstein.hpp"
 #include "../headers/handle-input.hpp"
 using namespace std;
@@ -15,7 +16,7 @@ unsigned int manhattanDistance(int* x, int* y, uint64_t n) {
 }
 
 // Brute Force
-void Brute_Force(uint64_t d_original, uint32_t q_num, int number_of_images, set<vector<int> > &Brute) {
+void Brute_Force(uint64_t d_original, uint32_t q_num, int number_of_images, unordered_map<int, vector<int> > &Brute) {
     vector<pair <int, unsigned int> > n_neighbours;
     vector<int> neighbours;
     unsigned int current_distance = 0;
@@ -33,7 +34,23 @@ void Brute_Force(uint64_t d_original, uint32_t q_num, int number_of_images, set<
     for (unsigned int i=0; i<n_neighbours.size(); i++) {
         neighbours.push_back(n_neighbours[i].first);
     }
+    Brute[q_num] = neighbours;
+    // neighbours.clear();
+}
 
-    Brute.insert(neighbours);
-    neighbours.clear();
+void Evaluate_Results(int number_of_query_images, unordered_map<int, vector<int> > &Brute, ofstream* file) {
+    // Number of images to be evaluated
+    int sum = 0;
+    double total_value = 0.0;
+    for (int i=0; i<number_of_query_images; i++) {
+        // Number of neighbours per image
+        for (int j=0; j<N; j++) {
+            if (all_images_labels[Brute[i][j]] == query_images_labels[i]) {
+                sum++;
+            }
+        }
+    }
+    total_value = (double)sum/((double)number_of_query_images*(double)N);
+    // write to file
+    (*file) << "Average Correct Search Results MANHATTAN: " << total_value << endl;
 }
