@@ -9,28 +9,6 @@ using namespace std;
 int** all_images_original_space = NULL;
 int** all_images_new_space = NULL;
 
-void readConfFile(string filename, int* K_medians, int *L, int *k) {
-	ifstream confFile(filename);
-	string param;
-	int value;
-
-	while (confFile >> param >> value) {
-		if(param == "number_of_clusters:") {
-			*K_medians = value;
-		}
-		else if(param == "number_of_vector_hash_tables:") {
-			*L = value;
-		}
-		else if(param == "number_of_vector_hash_functions:") {
-			*k = value;
-		}
-	}
-}
-
-void readClusterFile() {
-
-}
-
 void handleReExecution (
 	uint32_t *number_of_images, 
 	uint64_t *d_original,

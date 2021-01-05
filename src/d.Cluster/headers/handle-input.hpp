@@ -13,5 +13,6 @@ void handleInput(int , char**, uint32_t*, uint64_t*, int*, int*, int*, std::stri
 void handleReExecution(uint32_t*, uint64_t*, int*, int*, int*, std::string*);
 void readFile(const std::string&, int, uint32_t*, uint64_t*, int, int);
 void readFileOriginalSpace(const std::string&, int, uint32_t*, uint64_t*, int, int);
-void printFiles(uint32_t, uint32_t, uint64_t, uint64_t);
+void printFiles(uint32_t, uint64_t, uint64_t);
+void readConfFile(std::string , int *, int *, int *);
 uint16_t *openMMap(std::string, long &);
