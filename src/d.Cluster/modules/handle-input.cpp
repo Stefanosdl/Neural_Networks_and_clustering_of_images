@@ -64,7 +64,7 @@ void handleReExecution (
 		cout << "You need to provide the input_file_new_space path" << endl;
 		exit(ERROR);
 	}
-	if (clusters_file->empty())	{
+	if (clusters_file.empty())	{
 		cout << "You need to provide the clusters_file path" << endl;
 		exit(ERROR);
 	}
@@ -72,12 +72,12 @@ void handleReExecution (
 		cout << "You need to provide the output_file path" << endl;
 		exit(ERROR);
 	}
-	if (conf_file->empty()) {
+	if (conf_file.empty()) {
 		cout << "You need to provide the conf_file path" << endl;
 		exit(ERROR);
 	}
 	readFileOriginalSpace(input_file_original_space, INPUT_FILE, number_of_images, d_original);
-	readConfFile(conf_file, &K_medians, &L, &k);
+	readConfFile(conf_file, K_medians, l, k);
 }
 
 void handleInput(
@@ -135,6 +135,6 @@ void handleInput(
 
 	// read data from the input_file
 	readFileOriginalSpace(input_file_original_space, INPUT_FILE, number_of_images, d_original);
-	readConfFile(conf_file, &K_medians, &L, &k);
+	readConfFile(conf_file, K_medians, l, k);
 	// returning these values to main to continue execution
 }

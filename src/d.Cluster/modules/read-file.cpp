@@ -1,5 +1,6 @@
 // Function to read binary files
 #include <iostream>
+#include <sstream> 
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
@@ -8,8 +9,8 @@
 #include <iterator>
 #include "../headers/common.hpp"
 #include "../headers/handle-input.hpp"
-#include "../headers/hashtable.hpp"
-#include "../headers/manhattan-hashing.hpp"
+// #include "../headers/hashtable.hpp"
+// #include "../headers/manhattan-hashing.hpp"
 using namespace std;
 
 void printFiles(uint32_t number_of_images, uint64_t d_original, uint64_t d) {
@@ -26,7 +27,7 @@ void printFiles(uint32_t number_of_images, uint64_t d_original, uint64_t d) {
     for (uint32_t i = 0; i < number_of_images; i++) {
         cout << "next image" << endl;
         for (uint64_t j = 0; j < d; j++) {
-            cout << all_images[i][j] << '\t';
+            cout << all_images_new_space[i][j] << '\t';
         }
         cout << endl;
     }
@@ -52,6 +53,7 @@ uint16_t *openMMap(string name, long &size) {
 }
 
 // handling the input file
+// TODO: DOES IT NEED HASHTABLES???
 void readFile(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d, int k, int L) {
     long length;
     uint16_t *mmfile = openMMap(filename, length);
@@ -78,11 +80,11 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
 
     int dimensions = *d;
     int offset = 0;
-    all_images = new int *[image_number];
+    all_images_new_space = new int *[image_number];
     for (int image = 0; image < (int)image_number; image++) {
-        all_images[image] = new int[dimensions];
+        all_images_new_space[image] = new int[dimensions];
         for (int i = 0; i < dimensions; i++) {
-            all_images[image][i] = (int)buffer[offset];
+            all_images_new_space[image][i] = (int)buffer[offset];
             offset++;
         }
     }
@@ -159,7 +161,6 @@ void readConfFile(string filename, int* K_medians, int *L, int *k) {
     ifstream confFile(filename);
     string param;
     int value;
-
     while (confFile >> param >> value) {
         if(param == "number_of_clusters:") {
             *K_medians = value;
@@ -173,6 +174,38 @@ void readConfFile(string filename, int* K_medians, int *L, int *k) {
     }
 }
 
-void readClusterFile() {
-
+void readClusterFile(string filename, int K) {
+    ifstream clusterFile(filename);
+    string cluster_N, token, size_N, size_V, image_N;
+    string newString;
+    int _size, i;
+    int counter = 1;
+    while (clusterFile >> cluster_N >> token >> size_N >> size_V) {
+        if (cluster_N.compare("CLUSTER-" + to_string(counter)) != 0 || token.compare("{") != 0 || size_N.compare("size:") != 0){
+            cerr << "Something went wrong while reading the cluster file!" << endl;
+            exit(ERROR);
+        }
+        newString = size_V.substr(0, size_V.size()-1);
+        stringstream st (newString);
+        st >> _size;
+        if(_size < 0) {
+            cerr << "size of cluster is less than 0!" << endl;
+            exit(ERROR);
+        }
+        i = 0;
+        while (clusterFile >> image_N) {
+            // TODO: Store the images in cluster struct, instead of printing
+            cout << "Image: " << image_N << endl;
+            i++;
+            if (i == _size){
+                break;
+            }
+        }
+        counter++;
+    }
+    if (counter != K+1){
+        cerr << "K given is different than the number of classes read from cluster file!" << endl;
+        exit(ERROR);
+    }
+    return;
 }
