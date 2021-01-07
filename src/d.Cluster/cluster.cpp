@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cmath>
-// #include "headers/kmeansPP/kmeansPP.hpp"
+#include "headers/kmeansPP/kmeansPP.hpp"
 #include "headers/common.hpp"
 
 using namespace std;
@@ -12,23 +12,17 @@ int main(int argc, char **argv) {
     string output_file;
     string input_file;
     string config_file;
-    int K_medians = -1;
-    int L = 3;
-    int k_LSH = 4;
+    int K_medians;
     uint32_t number_of_images = 0;
     uint64_t d = 0;
     vector<pair<int*, vector<int> > > clusters;
     vector<double> s_i;
     ofstream o_file;
 
-    handleInput(argc, argv, &number_of_images, &d_original, &K_medians, &k, &l, &output_file);
+    handleInput(argc, argv, &number_of_images, &d_original, &K_medians, &output_file);
 
-    w=400;
-    M = pow(2, 32/(k_LSH));
-
-    m = M/2 - 1;
     auto start = chrono::system_clock::now();
-    clusters = kmeansPP(L, k_LSH, K_medians, number_of_images, d, method, points_M, probes);
+    clusters = kmeansPP(K_medians, number_of_images, d);
     s_i = silhouette(clusters, d);
 
     auto end = chrono::system_clock::now();

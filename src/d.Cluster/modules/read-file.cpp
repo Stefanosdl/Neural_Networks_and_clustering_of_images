@@ -9,8 +9,6 @@
 #include <iterator>
 #include "../headers/common.hpp"
 #include "../headers/handle-input.hpp"
-// #include "../headers/hashtable.hpp"
-// #include "../headers/manhattan-hashing.hpp"
 using namespace std;
 
 void printFiles(uint32_t number_of_images, uint64_t d_original, uint64_t d) {
@@ -53,8 +51,7 @@ uint16_t *openMMap(string name, long &size) {
 }
 
 // handling the input file
-// TODO: DOES IT NEED HASHTABLES???
-void readFile(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d, int k, int L) {
+void readFile(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d) {
     long length;
     uint16_t *mmfile = openMMap(filename, length);
     uint32_t* memblockmm;
@@ -111,7 +108,7 @@ uint8_t *openMMapOriginalSpace(string name, long &size) {
     return m_ptr;
 }
 
-void readFileOriginalSpace(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d, int k, int L) {
+void readFileOriginalSpace(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d) {
     long length;
     uint8_t *mmfile = openMMapOriginalSpace(filename, length);
     uint32_t* memblockmm;
@@ -138,8 +135,6 @@ void readFileOriginalSpace(const string& filename, int file_type, uint32_t* numb
 
     int dimensions = *d;
     int offset = 0;
-    initializeHashtables(L, image_number);
-    unsigned int g_x = 0;
     all_images_original_space = new int *[image_number];
     for (int image = 0; image < (int)image_number; image++) {
         all_images_original_space[image] = new int[dimensions];
@@ -147,29 +142,24 @@ void readFileOriginalSpace(const string& filename, int file_type, uint32_t* numb
             all_images_original_space[image][i] = (int)buffer[offset];
             offset++;
         }
-        for (int l = 0; l < L; l++) {
-            g_x = calculateG_X(k, *d, image, INPUT_FILE);
-            // pass to hashtable
-            insertToHashtable(l, image, g_x, image_number);
-        }
     }
 
     munmap(mmfile, length);
 }
 
-void readConfFile(string filename, int* K_medians, int *L, int *k) {
+void readConfFile(string filename, int* K_medians) {
     ifstream confFile(filename);
     string param;
-    int value;
+    int value, k, L;
     while (confFile >> param >> value) {
         if(param == "number_of_clusters:") {
             *K_medians = value;
         }
         else if(param == "number_of_vector_hash_tables:") {
-            *L = value;
+            L = value;
         }
         else if(param == "number_of_vector_hash_functions:") {
-            *k = value;
+            k = value;
         }
     }
 }
