@@ -16,9 +16,10 @@ void handleInput(
 	uint64_t *d_original,
 	uint64_t *d,
 	int *K_medians,
+	string *clusters_file,
 	string *output_file
 	){
-	string input_file_original_space, input_file_new_space, clusters_file, conf_file, param;
+	string input_file_original_space, input_file_new_space, conf_file, param;
 	// First we need to check for the least amount of arguments required
 	// Which are 11 since we need 4 files with their param and the executable
 	if (argc < 11) {
@@ -45,7 +46,7 @@ void handleInput(
 		cerr << "You need to provide the clusters_file path" << endl;
 		exit(ERROR);
 	}
-	clusters_file = argv[6];
+	*clusters_file = argv[6];
 
 	param = argv[7];
 	if (param != "-c") {

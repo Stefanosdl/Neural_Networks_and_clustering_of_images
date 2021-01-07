@@ -162,7 +162,6 @@ vector<pair<int*, vector<int> > > kmeansPP(int K, uint32_t number_of_images, uin
     initial_centroids.push_back(first_centroid);
     // it will have one position for each image
     nearest_clusters.resize(number_of_images);
-    
 
     // Initialize the K centroids
     for (int i = 1; i < K; i++) {
@@ -171,7 +170,6 @@ vector<pair<int*, vector<int> > > kmeansPP(int K, uint32_t number_of_images, uin
     }
 
     current_centroids = initial_centroids;
-
     do {
         previous_centroids = current_centroids;
         updateNearClusters(current_centroids, number_of_images, d);

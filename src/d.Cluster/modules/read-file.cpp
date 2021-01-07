@@ -10,6 +10,7 @@
 #include "../headers/common.hpp"
 #include "../headers/handle-input.hpp"
 using namespace std;
+int** cluster_images;
 
 void printFiles(uint32_t number_of_images, uint64_t d_original, uint64_t d) {
     cout << "INPUT ORIGINAL SPACE DATASET:" << endl;
@@ -164,11 +165,14 @@ void readConfFile(string filename, int* K_medians) {
     }
 }
 
-void readClusterFile(string filename, int K) {
+vector<pair<int*, vector<int> > > readClusterFile(string filename, int K) {
+    vector<vector<int> > temp(K);
+    vector<pair<int*, vector<int> > > clusters;
+    int coords[10] = {};
     ifstream clusterFile(filename);
     string cluster_N, token, size_N, size_V, image_N;
     string newString;
-    int _size, i;
+    int _size, i, image_number;
     int counter = 1;
     while (clusterFile >> cluster_N >> token >> size_N >> size_V) {
         if (cluster_N.compare("CLUSTER-" + to_string(counter)) != 0 || token.compare("{") != 0 || size_N.compare("size:") != 0){
@@ -184,8 +188,18 @@ void readClusterFile(string filename, int K) {
         }
         i = 0;
         while (clusterFile >> image_N) {
-            // TODO: Store the images in cluster struct, instead of printing
-            cout << "Image: " << image_N << endl;
+            /*
+                In clusters we have firstly: the coords of the centroid, 
+                secondly: the indexes of the neighbours
+            */
+            // cut the comma (last char of image_N), make it an int and push it to temp
+            // store the image_N in the
+            newString = image_N.substr(0, image_N.size()-1);
+            stringstream st1 (newString);
+            st1 >> image_number;
+            // 
+            temp[counter - 1].push_back(image_number);
+
             i++;
             if (i == _size){
                 break;
@@ -197,5 +211,10 @@ void readClusterFile(string filename, int K) {
         cerr << "K given is different than the number of classes read from cluster file!" << endl;
         exit(ERROR);
     }
-    return;
+    // store them in cluster
+    // first will be an empty int * array, because we don't have centroid and its coords
+    for (unsigned int i = 0; i < K; i++) {
+        clusters.push_back(make_pair(coords, temp[i]));
+    }
+    return clusters;
 }

@@ -13,16 +13,19 @@ int main(int argc, char **argv) {
     string output_file;
     string input_file;
     string config_file;
+    string clusters_file;
     int K_medians;
     uint32_t number_of_images = 0;
     uint64_t d = 0;
     uint64_t d_original = 0;
-    vector<pair<int*, vector<int> > > clusters;
+    vector<pair<int*, vector<int> > > clusters, cluster_from_file;
     vector<double> s_i;
     ofstream o_file;
 
-    handleInput(argc, argv, &number_of_images, &d_original, &d, &K_medians, &output_file);
-
+    handleInput(argc, argv, &number_of_images, &d_original, &d, &K_medians, &clusters_file, &output_file);
+    // read clusters from file and prepare the struct for the silhouette
+    cluster_from_file = readClusterFile(clusters_file, K_medians);
+    
     auto start = chrono::system_clock::now();
     clusters = kmeansPP(K_medians, number_of_images, d);
     s_i = silhouette(clusters, d);
