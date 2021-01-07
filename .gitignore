@@ -169,5 +169,6 @@ dmypy.json
 *.out
 *.app
 search
+cluster
 # Custom ignores
 Datasets

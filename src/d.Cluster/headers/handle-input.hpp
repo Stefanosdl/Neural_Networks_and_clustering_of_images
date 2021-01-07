@@ -11,4 +11,4 @@ void readFileOriginalSpace(const std::string&, uint32_t*, uint64_t*);
 void printFiles(uint32_t, uint64_t, uint64_t);
 void readConfFile(std::string , int *);
 uint16_t *openMMap(std::string, long &);
-std::vector<std::pair<int *, std::vector<int>>> readClusterFile(std::string, int);
+std::vector<std::pair<int *, std::vector<int>>> readClusterFile(std::string, int, uint64_t);

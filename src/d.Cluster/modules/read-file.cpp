@@ -7,8 +7,10 @@
 #include <fstream>
 #include <vector>
 #include <iterator>
+#include <algorithm>
 #include "../headers/common.hpp"
 #include "../headers/handle-input.hpp"
+#include "../headers/kmeansPP.hpp"
 using namespace std;
 
 void printFiles(uint32_t number_of_images, uint64_t d_original, uint64_t d) {
@@ -166,10 +168,33 @@ void readConfFile(string filename, int* K_medians) {
     }
 }
 
-vector<pair<int*, vector<int> > > readClusterFile(string filename, int K) {
+int* Calculate_Centroid(uint64_t d, vector<int> cluster_images) {
+    vector<int> temp_array;
+    int* new_centroids = new int [d];
+    if(cluster_images.size() == 0){
+        int* arrayZero = new int[d] ();
+        return arrayZero;
+    }
+    // Loop over each dimension of each image
+    for (uint64_t i = 0; i < d; i++) {
+        temp_array.resize(cluster_images.size());
+        for (uint32_t img = 0; img < cluster_images.size(); img++) {
+            // Store the current dimension of each image
+            int p = all_images_original_space[cluster_images[img]][i];
+            temp_array[img] = p;
+        }
+        // find median for current dimension
+        sort(temp_array.begin(), temp_array.end());
+        new_centroids[i] = temp_array[temp_array.size() / 2];
+        temp_array.clear();
+    }
+    return new_centroids;
+}
+
+vector<pair<int*, vector<int> > > readClusterFile(string filename, int K, uint64_t d_original) {
     vector<vector<int> > temp(K);
     vector<pair<int*, vector<int> > > clusters;
-    int coords[10] = {};
+    int* coords;
     ifstream clusterFile(filename);
     string cluster_N, token, size_N, size_V, image_N;
     string newString;
@@ -187,6 +212,10 @@ vector<pair<int*, vector<int> > > readClusterFile(string filename, int K) {
             cerr << "size of cluster is less than 0!" << endl;
             exit(ERROR);
         }
+        else if (_size == 0){
+            counter++;
+            continue;
+        }
         i = 0;
         while (clusterFile >> image_N) {
             /*
@@ -200,7 +229,6 @@ vector<pair<int*, vector<int> > > readClusterFile(string filename, int K) {
             st1 >> image_number;
             // 
             temp[counter - 1].push_back(image_number);
-
             i++;
             if (i == _size){
                 break;
@@ -208,14 +236,18 @@ vector<pair<int*, vector<int> > > readClusterFile(string filename, int K) {
         }
         counter++;
     }
-    if (counter != K+1){
+    if (counter != (K+1)){
         cerr << "K given is different than the number of classes read from cluster file!" << endl;
         exit(ERROR);
     }
+
     // store them in cluster
     // first will be an empty int * array, because we don't have centroid and its coords
     for (int i = 0; i < K; i++) {
+        // Calculate the centroids
+        coords = Calculate_Centroid(d_original, temp[i]);
         clusters.push_back(make_pair(coords, temp[i]));
     }
+
     return clusters;
 }

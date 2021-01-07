@@ -1,7 +1,7 @@
 #include "../headers/kmeansPP.hpp"
 #include "../headers/common.hpp"
 
-unsigned int averageDistanceOfImageInCluster(int image, vector<pair<int*, vector<int> > > clusters, int c, u_int64_t d, int** cluster_images) {
+unsigned int averageDistanceOfImageInCluster(int image, vector<pair<int*, vector<int> > > clusters, int c, uint64_t d, int** cluster_images) {
     unsigned int total_dist = 0;
     // for all images in this cluster
     // except yourself
@@ -21,7 +21,7 @@ unsigned int averageDistanceOfImageInCluster(int image, vector<pair<int*, vector
 }
 
 // take a centroid and measure distance with all other centroids and return the coords of the closest one
-int findSecondClosestCentroid (int* centroidCoords, vector<pair<int*, vector<int> > > clusters, u_int64_t d) {
+int findSecondClosestCentroid (int* centroidCoords, vector<pair<int*, vector<int> > > clusters, uint64_t d) {
     unsigned int min_distance = inf;
     int res_centroid = -1;
     unsigned int dist = 0;
@@ -41,7 +41,7 @@ double calculateS_I (unsigned int a_i, unsigned int b_i) {
     return ((double)b_i - (double)a_i)/((double)a_i > (double)b_i ? (double)a_i : (double)b_i);
 }
 
-vector<double> silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t d, int** cluster_images) {
+vector<double> silhouette(vector<pair<int*, vector<int> > > clusters, uint64_t d, int** cluster_images) {
     unsigned int a_i = 0, b_i = 0;
     double tmp_s_i;
     int counter = 0;
