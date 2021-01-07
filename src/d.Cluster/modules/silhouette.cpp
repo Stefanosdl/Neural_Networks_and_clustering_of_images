@@ -15,7 +15,10 @@ unsigned int averageDistanceOfImageInCluster(int image, vector<pair<int*, vector
         // cluster_images[clusters[c].second[i]]: are the coords of the above mentined image
         total_dist += manhattanDistance(cluster_images[image], cluster_images[clusters[c].second[i]], d);
     }
-
+    // There is only image in cluster
+    if (clusters[c].second.size()== 1) {
+        return 0;
+    }
     // the loops above where (clusters[c].second.size() - 1), because it didn't run for it self
     return total_dist / (clusters[c].second.size() - 1);
 }
