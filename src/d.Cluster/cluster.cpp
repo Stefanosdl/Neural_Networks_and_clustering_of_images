@@ -3,8 +3,9 @@
 #include <algorithm>
 #include <chrono>
 #include <cmath>
-#include "headers/kmeansPP/kmeansPP.hpp"
+#include "headers/kmeansPP.hpp"
 #include "headers/common.hpp"
+#include "headers/handle-input.hpp"
 
 using namespace std;
 
@@ -15,11 +16,12 @@ int main(int argc, char **argv) {
     int K_medians;
     uint32_t number_of_images = 0;
     uint64_t d = 0;
+    uint64_t d_original = 0;
     vector<pair<int*, vector<int> > > clusters;
     vector<double> s_i;
     ofstream o_file;
 
-    handleInput(argc, argv, &number_of_images, &d_original, &K_medians, &output_file);
+    handleInput(argc, argv, &number_of_images, &d_original, &d, &K_medians, &output_file);
 
     auto start = chrono::system_clock::now();
     clusters = kmeansPP(K_medians, number_of_images, d);
@@ -36,27 +38,14 @@ int main(int argc, char **argv) {
     }
 
     // Write to file 
-    o_file << "Algorithm: " << method << endl;
     for (unsigned int i=0; i < clusters.size(); i++) {
         if (clusters[i].second.size() == 0 || clusters[i].first == NULL) continue;
-        if (complete_flag) {
-            o_file << "CLUSTER-" << i+1 << " { centroid: [";
-            for (uint64_t j=0; j < d - 1; j++) {
-                o_file << clusters[i].first[j] << ", ";
-            }
-            o_file << clusters[i].first[d - 1] << "], [";
-            for (uint64_t j=0; j < clusters[i].second.size() - 1; j++) {
-                o_file << clusters[i].second[j] << ", ";
-            }
-            o_file <<clusters[i].second[clusters[i].second.size() - 1] << "]" << endl;
+
+        o_file << "CLUSTER-" << i+1 << " {size: " << clusters[i].second.size() << ", centroid: [";
+        for (uint64_t j=0; j < d - 1; j++) {
+            o_file << clusters[i].first[j] << ", ";
         }
-        else {
-            o_file << "CLUSTER-" << i+1 << " {size: " << clusters[i].second.size() << ", centroid: [";
-            for (uint64_t j=0; j < d - 1; j++) {
-                o_file << clusters[i].first[j] << ", ";
-            }
-            o_file << clusters[i].first[d - 1] << "] }" << endl;
-        }
+        o_file << clusters[i].first[d - 1] << "] }" << endl;
     }
     o_file << "clustering_time: " << elapsed.count() << " seconds" <<endl;
 

@@ -12,8 +12,9 @@ int** all_images_new_space = NULL;
 void handleInput(
 	int argc,
 	char **argv,
-	uint32_t *number_of_images, 
+	uint32_t *number_of_images,
 	uint64_t *d_original,
+	uint64_t *d,
 	int *K_medians,
 	string *output_file
 	){
@@ -37,7 +38,7 @@ void handleInput(
 		cerr << "You need to provide the input_file_new_space path" << endl;
 		exit(ERROR);
 	}
-	*input_file_new_space = argv[4];
+	input_file_new_space = argv[4];
 
  	param = argv[5];
 	if (param != "-n") {
@@ -61,7 +62,8 @@ void handleInput(
 	*output_file = argv[10];
 
 	// read data from the input_file
-	readFileOriginalSpace(input_file_original_space, INPUT_FILE, number_of_images, d_original);
+	readFileOriginalSpace(input_file_original_space, number_of_images, d_original);
+	readFile(input_file_new_space, number_of_images, d);
 	readConfFile(conf_file, K_medians);
 	// returning these values to main to continue execution
 }

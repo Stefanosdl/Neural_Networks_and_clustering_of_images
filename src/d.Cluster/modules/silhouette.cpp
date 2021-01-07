@@ -1,6 +1,5 @@
 #include <iostream>
 #include "../headers/kmeansPP.hpp"
-#include "../headers/distances.hpp"
 #include "../headers/common.hpp"
 
 unsigned int averageDistanceOfImageInCluster(int image, vector<pair<int*, vector<int> > > clusters, int c, u_int64_t d) {
