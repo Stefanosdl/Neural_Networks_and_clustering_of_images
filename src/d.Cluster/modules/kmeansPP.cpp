@@ -45,7 +45,7 @@ bool isSameCoords(int* arr1, int* arr2, uint64_t d) {
     return true;
 }
 
-int nextInitialCentroidIndex(uint32_t number_of_images, uint64_t d) {
+int nextInitialCentroidIndex(uint32_t number_of_images, uint64_t d, int** cluster_images) {
     unsigned int min_dist, max_dist, current_distance = 0;
     vector<float> partial_sums;
     float d_i = 0.0;
@@ -78,7 +78,7 @@ int nextInitialCentroidIndex(uint32_t number_of_images, uint64_t d) {
     return partial_sums.back();
 }
 
-void getClosestCentroid(uint32_t index, vector<int*> centroids, uint64_t d) {
+void getClosestCentroid(uint32_t index, vector<int*> centroids, uint64_t d, int** cluster_images) {
     int closest_cluster = -1;
     unsigned int min_distance = inf;
     for (unsigned int c = 0; c < centroids.size(); c++) {
@@ -99,15 +99,15 @@ void getClosestCentroid(uint32_t index, vector<int*> centroids, uint64_t d) {
 // select the smallest distance and save it in this cluster's centroid
 // This function should have three different bodies
 // the current body represent the Lloyd's, the other two will be the reverse LSH and reverse Cube
-void updateNearClusters(vector<int*> centroids, uint32_t number_of_images, uint64_t d) {
+void updateNearClusters(vector<int*> centroids, uint32_t number_of_images, uint64_t d, int** cluster_images) {
     for (uint32_t i = 0; i < number_of_images; i++) {
-        getClosestCentroid(i, centroids, d);        
+        getClosestCentroid(i, centroids, d, cluster_images);        
     }
 }
 
 // k-medians, calculate the median in order to get next 
 // cluster's centroid coords
-void updateCentroids(vector<int*> &centroids, uint32_t number_of_images, uint64_t d) {
+void updateCentroids(vector<int*> &centroids, uint32_t number_of_images, uint64_t d, int** cluster_images) {
     vector<int> temp_array;
     vector<int *> new_centroids;
     vector<int> images_in_cluster;
@@ -149,7 +149,7 @@ bool equalCentroids(uint64_t d, int loops) {
     return (total_distance < SMALL_E);
 }
 
-vector<pair<int*, vector<int> > > kmeansPP(int K, uint32_t number_of_images, uint64_t d) {
+vector<pair<int*, vector<int> > > kmeansPP(int K, uint32_t number_of_images, uint64_t d, int** cluster_images) {
     // this is a vector of all centroids
     // for each centroid store a vector of images assigned in this cluster
     vector<vector<int> > temp(K);
@@ -165,15 +165,15 @@ vector<pair<int*, vector<int> > > kmeansPP(int K, uint32_t number_of_images, uin
 
     // Initialize the K centroids
     for (int i = 1; i < K; i++) {
-        updateNearClusters(initial_centroids, number_of_images, d);
-        initial_centroids.push_back(cluster_images[nextInitialCentroidIndex(number_of_images, d)]);
+        updateNearClusters(initial_centroids, number_of_images, d, cluster_images);
+        initial_centroids.push_back(cluster_images[nextInitialCentroidIndex(number_of_images, d, cluster_images)]);
     }
 
     current_centroids = initial_centroids;
     do {
         previous_centroids = current_centroids;
-        updateNearClusters(current_centroids, number_of_images, d);
-        updateCentroids(current_centroids, number_of_images, d);
+        updateNearClusters(current_centroids, number_of_images, d, cluster_images);
+        updateCentroids(current_centroids, number_of_images, d, cluster_images);
         loops++;
     } while (!equalCentroids(d, loops));
 

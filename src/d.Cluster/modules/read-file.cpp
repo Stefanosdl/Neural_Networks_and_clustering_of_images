@@ -10,7 +10,6 @@
 #include "../headers/common.hpp"
 #include "../headers/handle-input.hpp"
 using namespace std;
-int** cluster_images;
 
 void printFiles(uint32_t number_of_images, uint64_t d_original, uint64_t d) {
     cout << "INPUT ORIGINAL SPACE DATASET:" << endl;

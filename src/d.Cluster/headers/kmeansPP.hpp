@@ -16,8 +16,7 @@ extern vector<int*> initial_centroids;
 extern vector<int*> current_centroids;
 extern vector<int*> previous_centroid;
 // in cluster images, I save number_of_images images (is a d-dimensional array)
-extern int** cluster_images;
 
-vector<pair<int*, vector<int> > > kmeansPP(int, uint32_t, uint64_t);
-vector<double> silhouette(vector<pair<int *, vector<int>>>, u_int64_t);
+vector<pair<int*, vector<int> > > kmeansPP(int, uint32_t, uint64_t, int**);
+vector<double> silhouette(vector<pair<int *, vector<int>>>, u_int64_t, int**);
 unsigned int manhattanDistance(int*, int*, uint64_t);

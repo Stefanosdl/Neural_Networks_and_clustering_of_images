@@ -1,8 +1,7 @@
-#include <iostream>
 #include "../headers/kmeansPP.hpp"
 #include "../headers/common.hpp"
 
-unsigned int averageDistanceOfImageInCluster(int image, vector<pair<int*, vector<int> > > clusters, int c, u_int64_t d) {
+unsigned int averageDistanceOfImageInCluster(int image, vector<pair<int*, vector<int> > > clusters, int c, u_int64_t d, int** cluster_images) {
     unsigned int total_dist = 0;
     // for all images in this cluster
     // except yourself
@@ -42,7 +41,7 @@ double calculateS_I (unsigned int a_i, unsigned int b_i) {
     return ((double)b_i - (double)a_i)/((double)a_i > (double)b_i ? (double)a_i : (double)b_i);
 }
 
-vector<double> silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t d) {
+vector<double> silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t d, int** cluster_images) {
     unsigned int a_i = 0, b_i = 0;
     double tmp_s_i;
     int counter = 0;
@@ -55,9 +54,9 @@ vector<double> silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t 
         tmp_s_i = 0;
         for (unsigned int img = 0; img < clusters[c].second.size(); img++) {
             // calculate a_i component for this specific image
-            a_i = averageDistanceOfImageInCluster(clusters[c].second[img], clusters, c, d);
+            a_i = averageDistanceOfImageInCluster(clusters[c].second[img], clusters, c, d, cluster_images);
             // calculate b_i component for this specific image
-            b_i = averageDistanceOfImageInCluster(clusters[c].second[img], clusters, findSecondClosestCentroid(clusters[c].first, clusters, d), d);
+            b_i = averageDistanceOfImageInCluster(clusters[c].second[img], clusters, findSecondClosestCentroid(clusters[c].first, clusters, d), d, cluster_images);
             // add to the counter for the s_i calculation
             tmp_s_i += calculateS_I(a_i, b_i);
         }
