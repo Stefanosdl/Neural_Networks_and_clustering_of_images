@@ -52,7 +52,7 @@ uint16_t *openMMap(string name, long &size) {
 }
 
 // handling the input file
-void readFile(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d) {
+void readFile(const string& filename, uint32_t* number_of_images, uint64_t* d) {
     long length;
     uint16_t *mmfile = openMMap(filename, length);
     uint32_t* memblockmm;
@@ -109,7 +109,7 @@ uint8_t *openMMapOriginalSpace(string name, long &size) {
     return m_ptr;
 }
 
-void readFileOriginalSpace(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d) {
+void readFileOriginalSpace(const string& filename, uint32_t* number_of_images, uint64_t* d) {
     long length;
     uint8_t *mmfile = openMMapOriginalSpace(filename, length);
     uint32_t* memblockmm;
@@ -151,16 +151,18 @@ void readFileOriginalSpace(const string& filename, int file_type, uint32_t* numb
 void readConfFile(string filename, int* K_medians) {
     ifstream confFile(filename);
     string param;
-    int value, k, L;
+    int value;
     while (confFile >> param >> value) {
         if(param == "number_of_clusters:") {
             *K_medians = value;
         }
         else if(param == "number_of_vector_hash_tables:") {
-            L = value;
+            // int L = value;
+            continue;
         }
         else if(param == "number_of_vector_hash_functions:") {
-            k = value;
+            // int k = value;
+            continue;
         }
     }
 }
@@ -213,7 +215,7 @@ vector<pair<int*, vector<int> > > readClusterFile(string filename, int K) {
     }
     // store them in cluster
     // first will be an empty int * array, because we don't have centroid and its coords
-    for (unsigned int i = 0; i < K; i++) {
+    for (int i = 0; i < K; i++) {
         clusters.push_back(make_pair(coords, temp[i]));
     }
     return clusters;
