@@ -183,6 +183,13 @@ vector<pair<int*, vector<int> > > kmeansPP(int K, uint32_t number_of_images, uin
         temp[nearest_clusters[i].first].push_back(i);
     for (unsigned int i = 0; i < current_centroids.size(); i++)
         clusters.push_back(make_pair(current_centroids[i], temp[i]));
+
+    temp.clear();
+    nearest_clusters.clear();
+    initial_centroids.clear();
+    current_centroids.clear();
+    previous_centroids.clear();
+    
     return clusters;
 }
 
