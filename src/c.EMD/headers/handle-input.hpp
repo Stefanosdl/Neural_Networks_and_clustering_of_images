@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <fstream>
-#define N 15
+#define N 7
 #define SAMPLE_QUERY 10
 #define SAMPLE_INPUT 100
 

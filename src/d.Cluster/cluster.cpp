@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
     auto end = chrono::system_clock::now();
     auto elapsedOriginalSpace = chrono::duration<double>(end - start);
     // New Space  
-    auto start = chrono::system_clock::now();
+    start = chrono::system_clock::now();
     clusters_new = kmeansPP(K_medians, number_of_images, d, all_images_new_space);
     // find centroids on original space
     for (int i = 0; i < K_medians; i++) {
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     }
     s_i_new = silhouette(clusters_new_space, d_original, all_images_original_space);
     cout<<"END SIL NEW"<<endl;
-    auto end = chrono::system_clock::now();
+    end = chrono::system_clock::now();
     auto elapsedNewSpace = chrono::duration<double>(end - start);
 
     // open output file
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
         cerr << "Output file can't be opened" << endl;
         exit(ERROR);
     }
-
+    
     // Write to file
     o_file << "NEW SPACE" <<endl;
     for (unsigned int i=0; i < clusters_new_space.size(); i++) {
@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
         o_file << s_i_new[i] << ", ";
     o_file << s_i_new[s_i_new.size() - 1] << "]";
 
-    o_file << "ORIGINAL SPACE" <<endl;
+    o_file << endl << "ORIGINAL SPACE" <<endl;
     for (unsigned int i=0; i < clusters_original_space.size(); i++) {
         if (clusters_original_space[i].second.size() == 0 || clusters_original_space[i].first == NULL) {
             o_file << "CLUSTER-" << i+1 << " {size: " << clusters_original_space[i].second.size() << ", centroid: [] }";
@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
         o_file << s_i_original[i] << ", ";
     o_file << s_i_original[s_i_original.size() - 1] << "]";
 
-    o_file << "CLASSES AS CLUSTERS" <<endl;
+    o_file << endl << "CLASSES AS CLUSTERS" <<endl;
     o_file << "Silhouette: [";
     for (unsigned int i=0; i < s_i_from_file.size() - 1; i++)
         o_file << s_i_from_file[i] << ", ";

@@ -4,7 +4,7 @@ from python.reader import handleInput, read_all_files
 from collections import OrderedDict
 from python.emd import EarthMoverDistance, Evaluate_Results
 
-N = 15
+N = 7
 sample_query = 10
 sample_input = 100
 
