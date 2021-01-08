@@ -20,3 +20,4 @@ extern vector<int*> previous_centroid;
 vector<pair<int*, vector<int> > > kmeansPP(int, uint32_t, uint64_t, int**);
 vector<double> silhouette(vector<pair<int *, vector<int>>>, uint64_t, int**);
 unsigned int manhattanDistance(int*, int*, uint64_t);
+int* Calculate_Centroid(uint64_t, vector<int>);

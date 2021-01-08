@@ -168,29 +168,6 @@ void readConfFile(string filename, int* K_medians) {
     }
 }
 
-int* Calculate_Centroid(uint64_t d, vector<int> cluster_images) {
-    vector<int> temp_array;
-    int* new_centroids = new int [d];
-    if(cluster_images.size() == 0){
-        int* arrayZero = new int[d] ();
-        return arrayZero;
-    }
-    // Loop over each dimension of each image
-    for (uint64_t i = 0; i < d; i++) {
-        temp_array.resize(cluster_images.size());
-        for (uint32_t img = 0; img < cluster_images.size(); img++) {
-            // Store the current dimension of each image
-            int p = all_images_original_space[cluster_images[img]][i];
-            temp_array[img] = p;
-        }
-        // find median for current dimension
-        sort(temp_array.begin(), temp_array.end());
-        new_centroids[i] = temp_array[temp_array.size() / 2];
-        temp_array.clear();
-    }
-    return new_centroids;
-}
-
 vector<pair<int*, vector<int> > > readClusterFile(string filename, int K, uint64_t d_original) {
     vector<vector<int> > temp(K);
     vector<pair<int*, vector<int> > > clusters;

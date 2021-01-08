@@ -18,9 +18,10 @@ int main(int argc, char **argv) {
     uint32_t number_of_images = 0;
     uint64_t d = 0;
     uint64_t d_original = 0;
-    vector<pair<int*, vector<int> > > cluster_from_file, clusters_original_space, clusters_new_space;
+    vector<pair<int*, vector<int> > > cluster_from_file, clusters_original_space, clusters_new, clusters_new_space;
     vector<double> s_i_from_file, s_i_original, s_i_new;
     ofstream o_file;
+    int* coords;
 
     handleInput(argc, argv, &number_of_images, &d_original, &d, &K_medians, &clusters_file, &output_file);
     // read clusters from file and prepare the struct for the silhouette
@@ -37,11 +38,17 @@ int main(int argc, char **argv) {
     auto end = chrono::system_clock::now();
     auto elapsedOriginalSpace = chrono::duration<double>(end - start);
     // New Space  
-    start = chrono::system_clock::now();
-    clusters_new_space = kmeansPP(K_medians, number_of_images, d, all_images_new_space);
-    s_i_new = silhouette(clusters_new_space, d, all_images_new_space);
+    auto start = chrono::system_clock::now();
+    clusters_new = kmeansPP(K_medians, number_of_images, d, all_images_new_space);
+    // find centroids on original space
+    for (int i = 0; i < K_medians; i++) {
+        // Calculate the centroids
+        coords = Calculate_Centroid(d_original, clusters_new[i].second);
+        clusters_new_space.push_back(make_pair(coords, clusters_new[i].second));
+    }
+    s_i_new = silhouette(clusters_new_space, d_original, all_images_original_space);
     cout<<"END SIL NEW"<<endl;
-    end = chrono::system_clock::now();
+    auto end = chrono::system_clock::now();
     auto elapsedNewSpace = chrono::duration<double>(end - start);
 
     // open output file
@@ -60,10 +67,10 @@ int main(int argc, char **argv) {
         }
         o_file << "CLUSTER-" << i+1 << " {size: " << clusters_new_space[i].second.size() << ", centroid: [";
 
-        for (uint64_t j=0; j < d - 1; j++) {
+        for (uint64_t j=0; j < d_original - 1; j++) {
             o_file << clusters_new_space[i].first[j] << ", ";
         }
-        o_file << clusters_new_space[i].first[d - 1] << "] }" << endl;
+        o_file << clusters_new_space[i].first[d_original - 1] << "] }" << endl;
     }
     o_file << "clustering_time: " << elapsedNewSpace.count() << " seconds" <<endl;
 
@@ -80,10 +87,10 @@ int main(int argc, char **argv) {
         }
         o_file << "CLUSTER-" << i+1 << " {size: " << clusters_original_space[i].second.size() << ", centroid: [";
 
-        for (uint64_t j=0; j < d - 1; j++) {
+        for (uint64_t j=0; j < d_original - 1; j++) {
             o_file << clusters_original_space[i].first[j] << ", ";
         }
-        o_file << clusters_original_space[i].first[d - 1] << "] }" << endl;
+        o_file << clusters_original_space[i].first[d_original - 1] << "] }" << endl;
     }
     o_file << "clustering_time: " << elapsedOriginalSpace.count() << " seconds" <<endl;
 
