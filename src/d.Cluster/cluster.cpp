@@ -29,12 +29,10 @@ int main(int argc, char **argv) {
     cluster_from_file = readClusterFile(clusters_file, K_medians, d_original);
 
     s_i_from_file = silhouette(cluster_from_file, d_original, all_images_original_space);
-    cout<<"END SIL FILE"<<endl;
     // Original Space
     auto start = chrono::system_clock::now();
     clusters_original_space = kmeansPP(K_medians, number_of_images, d_original, all_images_original_space);
     s_i_original = silhouette(clusters_original_space, d_original, all_images_original_space);
-    cout<<"END SIL ORIGINAL"<<endl;
     auto end = chrono::system_clock::now();
     auto elapsedOriginalSpace = chrono::duration<double>(end - start);
     // New Space  
@@ -46,10 +44,8 @@ int main(int argc, char **argv) {
         coords = Calculate_Centroid(d_original, clusters_new[i].second);
         clusters_new_space.push_back(make_pair(coords, clusters_new[i].second));
     }
-    // Obj function
-    calculateObjectiveFunction(K_medians, number_of_images, clusters_new_space, d_original);
+    
     s_i_new = silhouette(clusters_new_space, d_original, all_images_original_space);
-    cout<<"END SIL NEW"<<endl;
     end = chrono::system_clock::now();
     auto elapsedNewSpace = chrono::duration<double>(end - start);
 
@@ -61,7 +57,7 @@ int main(int argc, char **argv) {
     }
     
     // Write to file
-    o_file << "NEW SPACE" <<endl;
+    o_file << "NEW SPACE" << endl;
     for (unsigned int i=0; i < clusters_new_space.size(); i++) {
         if (clusters_new_space[i].second.size() == 0 || clusters_new_space[i].first == NULL) {
             o_file << "CLUSTER-" << i+1 << " {size: " << clusters_new_space[i].second.size() << ", centroid: [] }";
@@ -79,9 +75,11 @@ int main(int argc, char **argv) {
     o_file << "Silhouette: [";
     for (unsigned int i=0; i < s_i_new.size() - 1; i++)
         o_file << s_i_new[i] << ", ";
-    o_file << s_i_new[s_i_new.size() - 1] << "]";
+    o_file << s_i_new[s_i_new.size() - 1] << "]" << endl;
+    // Obj function
+    o_file << "Value of Objective Function: " << calculateObjectiveFunction(K_medians, number_of_images, clusters_new_space, d_original) << endl;
 
-    o_file << endl << "ORIGINAL SPACE" <<endl;
+    o_file << endl << "ORIGINAL SPACE" << endl;
     for (unsigned int i=0; i < clusters_original_space.size(); i++) {
         if (clusters_original_space[i].second.size() == 0 || clusters_original_space[i].first == NULL) {
             o_file << "CLUSTER-" << i+1 << " {size: " << clusters_original_space[i].second.size() << ", centroid: [] }";
@@ -99,13 +97,17 @@ int main(int argc, char **argv) {
     o_file << "Silhouette: [";
     for (unsigned int i=0; i < s_i_original.size() - 1; i++)
         o_file << s_i_original[i] << ", ";
-    o_file << s_i_original[s_i_original.size() - 1] << "]";
+    o_file << s_i_original[s_i_original.size() - 1] << "]" << endl;
+    // Obj function
+    o_file << "Value of Objective Function: " <<calculateObjectiveFunction(K_medians, number_of_images, clusters_original_space, d_original)<<endl;
 
-    o_file << endl << "CLASSES AS CLUSTERS" <<endl;
+    o_file << endl << "CLASSES AS CLUSTERS" << endl;
     o_file << "Silhouette: [";
     for (unsigned int i=0; i < s_i_from_file.size() - 1; i++)
         o_file << s_i_from_file[i] << ", ";
-    o_file << s_i_from_file[s_i_from_file.size() - 1] << "]";
+    o_file << s_i_from_file[s_i_from_file.size() - 1] << "]" << endl;
+    // Obj function
+    o_file << "Value of Objective Function: " <<calculateObjectiveFunction(K_medians, number_of_images, cluster_from_file, d_original)<<endl;
 
     o_file.close();
     s_i_from_file.clear();

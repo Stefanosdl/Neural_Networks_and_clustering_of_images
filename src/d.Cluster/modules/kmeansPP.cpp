@@ -221,7 +221,7 @@ unsigned int calculateObjectiveFunction(int K_medians, uint32_t number_of_images
     unsigned int sum;
     for (int i = 0; i < K_medians; i++) {
         sum = 0;
-        for (int j = 0; j < number_of_images; j++) {
+        for (unsigned int j = 0; j < number_of_images; j++) {
             sum += manhattanDistance(clusters[i].first, all_images_original_space[j], d_original);
         }
         if(sum < v_c) v_c = sum;
