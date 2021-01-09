@@ -46,6 +46,8 @@ int main(int argc, char **argv) {
         coords = Calculate_Centroid(d_original, clusters_new[i].second);
         clusters_new_space.push_back(make_pair(coords, clusters_new[i].second));
     }
+    // Obj function
+    calculateObjectiveFunction(K_medians, number_of_images, clusters_new_space, d_original);
     s_i_new = silhouette(clusters_new_space, d_original, all_images_original_space);
     cout<<"END SIL NEW"<<endl;
     end = chrono::system_clock::now();
