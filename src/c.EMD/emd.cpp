@@ -75,8 +75,5 @@ int main(int argc, char **argv) {
     delete[] query_images_original_space;
     delete[] all_images_labels;
     delete[] query_images_labels;
-
-
-    
     return SUCCESS;
 }
