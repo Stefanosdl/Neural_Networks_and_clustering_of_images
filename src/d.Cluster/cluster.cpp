@@ -32,12 +32,14 @@ int main(int argc, char **argv) {
     // Original Space
     auto start = chrono::system_clock::now();
     clusters_original_space = kmeansPP(K_medians, number_of_images, d_original, all_images_original_space);
-    s_i_original = silhouette(clusters_original_space, d_original, all_images_original_space);
     auto end = chrono::system_clock::now();
+    s_i_original = silhouette(clusters_original_space, d_original, all_images_original_space);
     auto elapsedOriginalSpace = chrono::duration<double>(end - start);
     // New Space  
     start = chrono::system_clock::now();
     clusters_new = kmeansPP(K_medians, number_of_images, d, all_images_new_space);
+    end = chrono::system_clock::now();
+    
     // find centroids on original space
     for (int i = 0; i < K_medians; i++) {
         // Calculate the centroids
@@ -46,7 +48,6 @@ int main(int argc, char **argv) {
     }
     
     s_i_new = silhouette(clusters_new_space, d_original, all_images_original_space);
-    end = chrono::system_clock::now();
     auto elapsedNewSpace = chrono::duration<double>(end - start);
 
     // open output file
