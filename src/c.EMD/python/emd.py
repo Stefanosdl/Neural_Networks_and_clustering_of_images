@@ -6,15 +6,15 @@ from ortools.linear_solver import pywraplp
 
 def Evaluate_Results(number_of_query_images, neighbours, ofile, query_labels, input_labels, N):
     # Number of images to be evaluated
-    sum = 0;
-    total_value = 0.0;
+    sum = 0
+    total_value = 0.0
     for i in range (number_of_query_images):
         # umber of neighbours per image
         for j in range(N):
             if (input_labels[neighbours[i][j]] == query_labels[i]):
-                sum += 1;
+                sum += 1
 
-    total_value = sum/(number_of_query_images*N);
+    total_value = sum/(number_of_query_images*N)
     # write to file
     ofile.write("Average Correct Search Results EMD: " + str(total_value))
 

@@ -30,15 +30,15 @@ int main(int argc, char **argv) {
         readFileOriginalSpace(labels_query, QUERY_LABELS, &number_of_query_images, &d_original);
 
         auto startBruteTimer = chrono::high_resolution_clock::now();
-        for (uint32_t q_num = 0; q_num < SAMPLE; q_num++) {
+        for (uint32_t q_num = 0; q_num < SAMPLE_QUERY; q_num++) {
             // Brute
-            Brute_Force(d_original, q_num, number_of_images, Brute);
+            Brute_Force(d_original, q_num, SAMPLE_INPUT, Brute);
         }
         auto finishBruteTimer = chrono::high_resolution_clock::now();
         elapsedBruteTimer += finishBruteTimer - startBruteTimer;
         cout << "Brute Timer is: " << elapsedBruteTimer.count() << endl;
 
-        Evaluate_Results(SAMPLE, Brute, &o_file);
+        Evaluate_Results(SAMPLE_QUERY, Brute, &o_file);
 
         o_file.close();
 
@@ -75,8 +75,5 @@ int main(int argc, char **argv) {
     delete[] query_images_original_space;
     delete[] all_images_labels;
     delete[] query_images_labels;
-
-
-    
     return SUCCESS;
 }
